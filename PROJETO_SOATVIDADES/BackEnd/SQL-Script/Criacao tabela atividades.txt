@@ -1,0 +1,6 @@
+CREATE TABLE atividade (
+	id int AUTO_INCREMENT PRIMARY KEY,
+    descricao varchar(255),
+    matRel int,
+    FOREIGN KEY (matRel) REFERENCES usuario(matricula)
+)

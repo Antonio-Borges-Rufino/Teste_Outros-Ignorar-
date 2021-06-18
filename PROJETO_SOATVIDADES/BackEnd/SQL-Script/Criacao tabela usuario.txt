@@ -1,0 +1,5 @@
+creat table usuario (
+	matricula int primary key,
+	nome varchar(60),
+	cargo int 1
+)
