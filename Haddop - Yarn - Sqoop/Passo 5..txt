@@ -1,0 +1,60 @@
+======================================================================================
+	ORQUESTRANDO AMBIENTES DE BIG DATA DISTRIBUIDOS COM ZOOKEEPER, YARN E SQOOP
+			CONHECENDO O AMBIENTE DO SQOOP
+======================================================================================
+1. ENTRAR COM O USUARIO NAO HADOOP
+2. CRIAR UMA PASTA NO DIRETORIO /usr/lib/sqoop
+	2.1 sudo mkdir /usr/lib/sqoop/
+3. VA ATÉ A PASTA RECEM CRIADA E BAIXE O SCOOP 1.4.7
+	3.1 cd /usr/lib/sqoop/
+	3.2 sudo wget http://archive.apache.org/dist/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
+4. EXTRAIA O ARQUIVO E AJEITE A PASTA
+	4.1 sudo tar -xvf sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
+	4.2 cd /usr/lib/sqoop/sqoop-1.4.7.bin__hadoop-2.6.0/
+	4.3 sudo mv * /usr/lib/sqoop/
+	4.4 sudo rm -R sqoop-1.4.7.bin__hadoop-2.6.0
+	4.5 sudo rm -R sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
+5. DE PERMISSÃO TOTAL A ESSE ARQUIVO
+	5.1 sudo chmod -R 777 /usr/lib/sqoop/
+6. AGORA VA PARA SEU USARIO HADOOP, NO MEU CASO, SE EU USAR SU OS COMANDOS HADOOP NÃO FUNCIONAM (???), ENTÃO SAIO E ENTRO EM COUTRA CONEXÃO
+	6.1 ssh hadoop@ipVM
+7. CONFIGURE O .bashrc DO SEU USARIO HADOOP
+	7.1 nano .bashrc
+	7.1 coloque essa linha no arquivo -> export SQOOP_HOME=/usr/lib/sqoop export PATH=$PATH:$SQOOP_HOME/bin
+	7.2 source ~/.bashrc
+8. CONFIGURANDO O SQOOP
+	8.1 cd $SQOOP_HOME/conf
+	8.2 mv sqoop-env-template.sh sqoop-env.sh
+	8.3 nano sqoop-env.sh
+		8.3.1 export HADOOP_COMMON_HOME=$HADOOP_COMMON_HOME
+		      export HADOOP_MAPRED_HOME=$HADOOP_MPRED_HOME
+9. BAIXE O CONECTOR JAVA E O COLOQUE NA PASTA $SQOOP_HOME/lib
+	9.1 wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.25.tar.gz
+	9.2 tar -xvf mysql-connector-java-8.0.25.tar.gz
+	9.3 rm mysql-connector-java-8.0.25.tar.gz
+	9.4 cd mysql-connector-java-8.0.25 && mv mysql-connector-java-8.0.25.jar $SQOOP_HOME/lib 
+	9.5 cd .. && rm -R mysql-connector-java-8.0.25  
+10. VERIFIQUE A CONEXÃO COM O SQOOP
+	10.1 no nosso caso, ele vai dar alguns warnings por causa que nao instalamos ainda o hive, zockeeper e outros
+	10.2 cd $SQOOP_HOME/bin && sqoop-version
+11. STARTE OS SERVIÇOS HADOOP
+	11.1 $HADOOP_HOME/bin/mapred --daemon start historyserver 
+	11.2 cd $HADOOP_HOME/sbin/  && ./start-dfs.sh && ./start-yarn.sh cd /home/hadoop/  
+12. BAIXE OS ARQUIVOS DO POKEMOS
+	12. wget https://raw.githubusercontent.com/DiscoDurodeRoer/Database_pokemon/master/1%C2%BA_generacion/scripts/mysql_pokemon.sql
+13. VAMOS CRIAR UM ALIAS PERMANENTE PARA NOSSO SQOOP
+	13.1 echo "alias sqoop='cd /usr/lib/sqoop/bin && ./sqoop'" >> ~/.bashrc
+	13.2 source ~/.bashrc
+14. STARTAR OS SERVIÇOS HADOOP
+	14.1 cd $HADOOP_HOME/sbin/ && ./start-dfs.sh && cd /home/hadoop/
+	14.2 cd $HADOOP_HOME/sbin/ && ./start-yarn.sh && cd /home/hadoop/
+	14.3 $HADOOP_HOME/bin/mapred --daemon start historyserver && cd /home/hadoop/
+15. VAMOS BOTAR A TABELA DO POKEMON NO SQL
+	15.1 NO CASO DA NOSSO ARQUIVO, PRECISAMOS INSERIR ANTES DE USE DATABASE, UMA LINHA DE CRIAÇÃO DO DATABASE
+		15.1.1 nano mysql_pokemon.sql
+			15.1.1.1 create database pokemondb;
+	15.2 AGORA USE O OCMANDO PARA RODAR O SCRIPT
+		15.2.1 mysql -u root -p < mysql_pokemon.sql
+16. NO MEU CASO, MEU MYSQL ESTÁ DEMORANDO PARA RESPONDER E DANDO VERIOS ERROS, NÃO SEI O
+QUE ACONTECEU E ESTOU PESQUISANDO, VOLTAREI A ATUALIZAR O DOCUMENTO QUANDO CONSEGUIR AJEITAR TUDO
+	

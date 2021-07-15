@@ -1,0 +1,45 @@
+======================================================================================
+				1. PREPARANDO O AMBIENTE
+======================================================================================
+1. NO SEU SERVIDOR UBUNTO INSTALE O IFCONFIG 
+	1.1 sudo apt install net-tools
+2. NO SEU COMPUTADOR CLIENTE BAIXE O MOBAXTERM QUE VAMOS UTILIZAR COMO CLIENTE SSH
+3. NO SEU SERVIDOR UBUNTO COLOQUE O COMANDO 
+	3.1 sudo systemctl enable --now ssh
+4. AGORA VERIFIQUE O ESTADO DO SERVIÇO COM 
+	4.1 sudo systemctl status ssh
+5. LIBERE A PORTA 22 DO SERVIDOR NO FIREWALL
+	5.1 sudo ufw allow ssh
+6. USE O IFCONFIG PARA SABER SEU ENDEREÇO IP NA SUA REDE LOCAL
+7. ABRA O MOBAXTERM
+9. CONECTE COM SEU SERVIDOR UBUNTO USANDO O COMANDO
+	9.1 ssh usurario@ipdoservidor
+10. AGORA COM O UBUNTO CONECTADO POR SSH PODEMOS COMEÇAR A INSTALAR OS COMPONENTES
+
+======================================================================================
+				2. INSTALANDO OS COMPONENTES
+======================================================================================
+1. OS COMPONENTES QUE VAMOS INSTALAR É O JAVA E O MYSQL
+2. PRIMEIRO COMANDO É O UPDATE ATUALIZAÇÃO DOS PACOTES, PARA ISSO USA-SE 
+	2.1 sudo apt update
+3. APOS ISSO, CERTIFIQUE-SE QUE O JAVA NÃO ESTÃ INSTALADO
+	3.1 java -version
+4. CASO O JAVA NÃO ESTEJA INSTALADO, USE O COMANDO 
+	4.1 sudo apt install default-jre
+5. AGORA INSTALE A JDK
+	5.1 sudo apt install default-jdk
+6. AGORA VAMOS INSTALAR O MYSQL 
+	6.1 sudo apt update
+	6.2 sudo apt install mysql-server
+	6.3 sudo mysql_secure_installation
+		6.3.1 DEFINA PARAMENTROS PARA SUA SENHA
+	6.4 sudo mysql
+	6.5 ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'password';
+	6.6 FLUSH PRIVILEGES;
+	6.7 exit
+
+======================================================================================
+				3. REFERENCIAS
+======================================================================================
+1. https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04-pt
+2. 
