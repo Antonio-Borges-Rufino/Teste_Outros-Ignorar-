@@ -1,0 +1,396 @@
+===============================================================================================
+			EXERCICIO 1
+===============================================================================================
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn import datasets, linear_model
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Load the diabetes dataset
+diabetes_X, diabetes_y = datasets.load_diabetes(return_X_y=True)
+
+# Use only one feature
+diabetes_X = diabetes_X[:, np.newaxis, 2]
+
+# Split the data into training/testing sets
+diabetes_X_train = diabetes_X[:-20]
+diabetes_X_test = diabetes_X[-20:]
+
+# Split the targets into training/testing sets
+diabetes_y_train = diabetes_y[:-20]
+diabetes_y_test = diabetes_y[-20:]
+
+# Create linear regression object
+regr = linear_model.LinearRegression()
+
+# Train the model using the training sets
+regr.fit(diabetes_X_train, diabetes_y_train)
+
+# Make predictions using the testing set
+diabetes_y_pred = regr.predict(diabetes_X_test)
+
+# The coefficients
+print('Coefficients: \n', regr.coef_)
+# The mean squared error
+print('Mean squared error: %.2f'
+      % mean_squared_error(diabetes_y_test, diabetes_y_pred))
+# The coefficient of determination: 1 is perfect prediction
+print('Coefficient of determination: %.2f'
+      % r2_score(diabetes_y_test, diabetes_y_pred))
+
+# Plot outputs
+plt.scatter(diabetes_X_test, diabetes_y_test,  color='black')
+plt.plot(diabetes_X_test, diabetes_y_pred, color='blue', linewidth=3)
+
+plt.xticks(())
+plt.yticks(())
+
+plt.show()
+===============================================================================================
+			EXERCICIO 2
+===============================================================================================
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import linear_model
+
+# X is the 10x10 Hilbert matrix
+X = 1. / (np.arange(1, 11) + np.arange(0, 10)[:, np.newaxis])
+y = np.ones(10)
+
+# #############################################################################
+# Compute paths
+
+n_alphas = 200
+alphas = np.logspace(-10, -2, n_alphas)
+
+coefs = []
+for a in alphas:
+    ridge = linear_model.Ridge(alpha=a, fit_intercept=False)
+    ridge.fit(X, y)
+    coefs.append(ridge.coef_)
+
+# #############################################################################
+# Display results
+
+ax = plt.gca()
+
+ax.plot(alphas, coefs)
+ax.set_xscale('log')
+ax.set_xlim(ax.get_xlim()[::-1])  # reverse axis
+plt.xlabel('alpha')
+plt.ylabel('weights')
+plt.title('Ridge coefficients as a function of the regularization')
+plt.axis('tight')
+plt.show()
+
+
+===============================================================================================
+			EXERCICIO 3
+===============================================================================================
+>>> from sklearn.datasets import load_iris
+>>> from sklearn import tree
+>>> iris = load_iris()
+>>> X, y = iris.data, iris.target
+>>> clf = tree.DecisionTreeClassifier()
+>>> clf = clf.fit(X, y)
+>>> tree.plot_tree(clf)
+>>> import graphviz 
+>>> dot_data = tree.export_graphviz(clf, out_file=None) 
+>>> graph = graphviz.Source(dot_data) 
+>>> graph.render("iris") 
+>>> dot_data = tree.export_graphviz(clf, out_file=None, 
+...                      feature_names=iris.feature_names,  
+...                      class_names=iris.target_names,  
+...                      filled=True, rounded=True,  
+...                      special_characters=True)  
+>>> graph = graphviz.Source(dot_data)  
+>>> graph 
+>>> from sklearn.datasets import load_iris
+>>> from sklearn.tree import DecisionTreeClassifier
+>>> from sklearn.tree import export_text
+>>> iris = load_iris()
+>>> decision_tree = DecisionTreeClassifier(random_state=0, max_depth=2)
+>>> decision_tree = decision_tree.fit(iris.data, iris.target)
+>>> r = export_text(decision_tree, feature_names=iris['feature_names'])
+>>> print(r)
+===============================================================================================
+			EXERCICIO 4
+===============================================================================================
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from matplotlib.colors import ListedColormap
+from sklearn import neighbors, datasets
+
+n_neighbors = 15
+
+# import some data to play with
+iris = datasets.load_iris()
+
+# we only take the first two features. We could avoid this ugly
+# slicing by using a two-dim dataset
+X = iris.data[:, :2]
+y = iris.target
+
+h = .02  # step size in the mesh
+
+# Create color maps
+cmap_light = ListedColormap(['orange', 'cyan', 'cornflowerblue'])
+cmap_bold = ['darkorange', 'c', 'darkblue']
+
+for weights in ['uniform', 'distance']:
+    # we create an instance of Neighbours Classifier and fit the data.
+    clf = neighbors.KNeighborsClassifier(n_neighbors, weights=weights)
+    clf.fit(X, y)
+
+    # Plot the decision boundary. For that, we will assign a color to each
+    # point in the mesh [x_min, x_max]x[y_min, y_max].
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                         np.arange(y_min, y_max, h))
+    Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+
+    # Put the result into a color plot
+    Z = Z.reshape(xx.shape)
+    plt.figure(figsize=(8, 6))
+    plt.contourf(xx, yy, Z, cmap=cmap_light)
+
+    # Plot also the training points
+    sns.scatterplot(x=X[:, 0], y=X[:, 1], hue=iris.target_names[y],
+                    palette=cmap_bold, alpha=1.0, edgecolor="black")
+    plt.xlim(xx.min(), xx.max())
+    plt.ylim(yy.min(), yy.max())
+    plt.title("3-Class classification (k = %i, weights = '%s')"
+              % (n_neighbors, weights))
+    plt.xlabel(iris.feature_names[0])
+    plt.ylabel(iris.feature_names[1])
+
+plt.show()
+
+===============================================================================================
+			EXERCICIO 5
+===============================================================================================
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import svm
+from sklearn.datasets import make_blobs
+
+
+# we create 40 separable points
+X, y = make_blobs(n_samples=40, centers=2, random_state=6)
+
+# fit the model, don't regularize for illustration purposes
+clf = svm.SVC(kernel='linear', C=1000)
+clf.fit(X, y)
+
+plt.scatter(X[:, 0], X[:, 1], c=y, s=30, cmap=plt.cm.Paired)
+
+# plot the decision function
+ax = plt.gca()
+xlim = ax.get_xlim()
+ylim = ax.get_ylim()
+
+# create grid to evaluate model
+xx = np.linspace(xlim[0], xlim[1], 30)
+yy = np.linspace(ylim[0], ylim[1], 30)
+YY, XX = np.meshgrid(yy, xx)
+xy = np.vstack([XX.ravel(), YY.ravel()]).T
+Z = clf.decision_function(xy).reshape(XX.shape)
+
+# plot decision boundary and margins
+ax.contour(XX, YY, Z, colors='k', levels=[-1, 0, 1], alpha=0.5,
+           linestyles=['--', '-', '--'])
+# plot support vectors
+ax.scatter(clf.support_vectors_[:, 0], clf.support_vectors_[:, 1], s=100,
+           linewidth=1, facecolors='none', edgecolors='k')
+plt.show()
+
+===============================================================================================
+			EXERCICIO 6
+===============================================================================================
+# Code source: Gaël Varoquaux
+# Modified for documentation by Jaques Grobler
+# License: BSD 3 clause
+
+import numpy as np
+import matplotlib.pyplot as plt
+# Though the following import is not directly being used, it is required
+# for 3D projection to work
+from mpl_toolkits.mplot3d import Axes3D
+
+from sklearn.cluster import KMeans
+from sklearn import datasets
+
+np.random.seed(5)
+
+iris = datasets.load_iris()
+X = iris.data
+y = iris.target
+
+estimators = [('k_means_iris_8', KMeans(n_clusters=8)),
+              ('k_means_iris_3', KMeans(n_clusters=3)),
+              ('k_means_iris_bad_init', KMeans(n_clusters=3, n_init=1,
+                                               init='random'))]
+
+fignum = 1
+titles = ['8 clusters', '3 clusters', '3 clusters, bad initialization']
+for name, est in estimators:
+    fig = plt.figure(fignum, figsize=(4, 3))
+    ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
+    est.fit(X)
+    labels = est.labels_
+
+    ax.scatter(X[:, 3], X[:, 0], X[:, 2],
+               c=labels.astype(float), edgecolor='k')
+
+    ax.w_xaxis.set_ticklabels([])
+    ax.w_yaxis.set_ticklabels([])
+    ax.w_zaxis.set_ticklabels([])
+    ax.set_xlabel('Petal width')
+    ax.set_ylabel('Sepal length')
+    ax.set_zlabel('Petal length')
+    ax.set_title(titles[fignum - 1])
+    ax.dist = 12
+    fignum = fignum + 1
+
+# Plot the ground truth
+fig = plt.figure(fignum, figsize=(4, 3))
+ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
+
+for name, label in [('Setosa', 0),
+                    ('Versicolour', 1),
+                    ('Virginica', 2)]:
+    ax.text3D(X[y == label, 3].mean(),
+              X[y == label, 0].mean(),
+              X[y == label, 2].mean() + 2, name,
+              horizontalalignment='center',
+              bbox=dict(alpha=.2, edgecolor='w', facecolor='w'))
+# Reorder the labels to have colors matching the cluster results
+y = np.choose(y, [1, 2, 0]).astype(float)
+ax.scatter(X[:, 3], X[:, 0], X[:, 2], c=y, edgecolor='k')
+
+ax.w_xaxis.set_ticklabels([])
+ax.w_yaxis.set_ticklabels([])
+ax.w_zaxis.set_ticklabels([])
+ax.set_xlabel('Petal width')
+ax.set_ylabel('Sepal length')
+ax.set_zlabel('Petal length')
+ax.set_title('Ground Truth')
+ax.dist = 12
+
+fig.show()
+===============================================================================================
+			EXERCICIO 7
+===============================================================================================
+import numpy as np
+
+from sklearn.cluster import DBSCAN
+from sklearn import metrics
+from sklearn.datasets import make_blobs
+from sklearn.preprocessing import StandardScaler
+
+
+# #############################################################################
+# Generate sample data
+centers = [[1, 1], [-1, -1], [1, -1]]
+X, labels_true = make_blobs(n_samples=750, centers=centers, cluster_std=0.4,
+                            random_state=0)
+
+X = StandardScaler().fit_transform(X)
+
+# #############################################################################
+# Compute DBSCAN
+db = DBSCAN(eps=0.3, min_samples=10).fit(X)
+core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+core_samples_mask[db.core_sample_indices_] = True
+labels = db.labels_
+
+# Number of clusters in labels, ignoring noise if present.
+n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+n_noise_ = list(labels).count(-1)
+
+print('Estimated number of clusters: %d' % n_clusters_)
+print('Estimated number of noise points: %d' % n_noise_)
+print("Homogeneity: %0.3f" % metrics.homogeneity_score(labels_true, labels))
+print("Completeness: %0.3f" % metrics.completeness_score(labels_true, labels))
+print("V-measure: %0.3f" % metrics.v_measure_score(labels_true, labels))
+print("Adjusted Rand Index: %0.3f"
+      % metrics.adjusted_rand_score(labels_true, labels))
+print("Adjusted Mutual Information: %0.3f"
+      % metrics.adjusted_mutual_info_score(labels_true, labels))
+print("Silhouette Coefficient: %0.3f"
+      % metrics.silhouette_score(X, labels))
+
+# #############################################################################
+# Plot result
+import matplotlib.pyplot as plt
+
+# Black removed and is used for noise instead.
+unique_labels = set(labels)
+colors = [plt.cm.Spectral(each)
+          for each in np.linspace(0, 1, len(unique_labels))]
+for k, col in zip(unique_labels, colors):
+    if k == -1:
+        # Black used for noise.
+        col = [0, 0, 0, 1]
+
+    class_member_mask = (labels == k)
+
+    xy = X[class_member_mask & core_samples_mask]
+    plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
+             markeredgecolor='k', markersize=14)
+
+    xy = X[class_member_mask & ~core_samples_mask]
+    plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
+             markeredgecolor='k', markersize=6)
+
+plt.title('Estimated number of clusters: %d' % n_clusters_)
+plt.show()
+===============================================================================================
+			EXERCICIO 8
+===============================================================================================
+
+import numpy as np
+
+from matplotlib import pyplot as plt
+from scipy.cluster.hierarchy import dendrogram
+from sklearn.datasets import load_iris
+from sklearn.cluster import AgglomerativeClustering
+
+
+def plot_dendrogram(model, **kwargs):
+    # Create linkage matrix and then plot the dendrogram
+
+    # create the counts of samples under each node
+    counts = np.zeros(model.children_.shape[0])
+    n_samples = len(model.labels_)
+    for i, merge in enumerate(model.children_):
+        current_count = 0
+        for child_idx in merge:
+            if child_idx < n_samples:
+                current_count += 1  # leaf node
+            else:
+                current_count += counts[child_idx - n_samples]
+        counts[i] = current_count
+
+    linkage_matrix = np.column_stack([model.children_, model.distances_,
+                                      counts]).astype(float)
+
+    # Plot the corresponding dendrogram
+    dendrogram(linkage_matrix, **kwargs)
+
+
+iris = load_iris()
+X = iris.data
+
+# setting distance_threshold=0 ensures we compute the full tree.
+model = AgglomerativeClustering(distance_threshold=0, n_clusters=None)
+
+model = model.fit(X)
+plt.title('Hierarchical Clustering Dendrogram')
+# plot the top three levels of the dendrogram
+plot_dendrogram(model, truncate_mode='level', p=3)
+plt.xlabel("Number of points in node (or index of point if no parenthesis).")
+plt.show()

@@ -1,0 +1,59 @@
+========================================================================================
+				Exercicio 1
+========================================================================================
+ hdfs dfs -put /input/exercises-data/juros_selic /user/aluno/antonio/data
+ val jurosSlicDF = spark.read.json("/user/aluno/antonio/data/juros_selic/juros_selic.json");
+ jurosSlicDF.printSchema();
+ jurosSlicDF.show(5);
+ jurosSlicDF.count();
+ val jurosDF10 = jurosSlicDF.where("valor > 10");
+ jurosDF10.write.saveAsTable("antonio.tab_juros_selic"); 
+ val jurosHiveDF = spark.read.table("antonio.tab_juros_selic");
+ jurosHiveDF.printSchema();
+ jurosHiveDF.show(5)
+ jurosHiveDF.write.save("/user/aluno/nome/data/save_juros/save_juros");
+ hdfs dfs -ls /user/aluno/nome/data/save_juros/
+ val saveJurosDF = spark.read.load("/user/aluno/nome/data/save_juros/save_juros");
+ saveJurosDF.printSchema();
+ saveJurosDF.show(5);
+
+========================================================================================
+				Exercicio 2
+========================================================================================
+ val alunosDF = spark.read.csv("/user/aluno/antonio/data/escola/alunos.csv");
+ alunosDF.pintSchema();
+ val alunosDF = spark.read.option("header","true").csv("/user/aluno/antonio/data/escola/alunos.csv");
+ alunosDF.pintSchema();
+ val alunosDF = spark.read.option("header","true").option("inferSchema","true").csv("/user/aluno/antonio/data/escola/alunos.csv");
+ alunosDF.pintSchema();
+ alunosDF.write.saveAsTable("antonio.tab_alunos");
+ val alunosCursoDF = spark.read.option("header","true").option("inferSchema","true").csv("/user/aluno/antonio/data/escola/cursos.csv");
+ val alunos_cursosDF = alunosDF.join(alunosCursoDF,alunosCursoDF("id_curso")===alunosDF("id_curso"),"inner");
+ alunos_cursosDF.show;
+ alunos_cursosDF.printSchema();
+ alunos_cursosDF.count();
+
+========================================================================================
+				Exercicio 3
+========================================================================================
+ spark.catalog.listDatabases.show();
+ spark.catalog.setCurrentDatabase("antonio");
+ spark.catalog.listTables.show();
+ spark.catalog.listColumns("tab_alunos").show();
+ spark.sql("select * from tab_alunos Limit 10").show();
+
+========================================================================================
+				Exercicio 4
+========================================================================================
+ val tabalunosDF = spark.read.parquet("/user/hive/warehouse/antonio.db/tab_alunos");
+ tabalunosDF.show(5);
+ spark.sql("select * from antonio.tab_alunos").show(5);
+ tabalunosDF.select("id_discente" ,"nome","ano_ingresso").where("ano_ingresso >= 2018").show(5);
+ spark.sql("select id_discente,nome,ano_ingresso from antonio.tab_alunos where ano_ingresso >= 2018").show(5);
+ tabalunosDF.select("id_discente" ,"nome","ano_ingresso").where("ano_ingresso >= 2018").orderBy("nome").show(5);
+ spark.sql("select id_discente,nome,ano_ingresso from antonio.tab_alunos where ano_ingresso >= 2018 order by nome").show(5);
+ val rerDF = tabalunosDF.select("id_discente" ,"nome","ano_ingresso").where("ano_ingresso >= 2018").orderBy("nome");
+ rerDF.count();
+ spark.sql("select count(nome) from antonio.tab_alunos where ano_ingresso >= 2018");
+ 
+ 

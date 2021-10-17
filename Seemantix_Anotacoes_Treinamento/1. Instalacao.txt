@@ -1,0 +1,100 @@
+1. o cluster hadoop vai ser instalado no windows via docker e wsl2
+2. baixar docker desktop no link (https://hub.docker.com/editions/community/docker-ce-desktop-windows/)
+	2.1 A exigencia e de ter o windows pro ou enterprise e 64 bits
+3. baixar o wsl2 (https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi)
+4. habilitar o subsistema do windows para linux(wsl) e a virtual machine plataform
+	4.1 Va em (Painel de Controle\Programas\Programas e Recursos)
+	4.2 Clique em recursos do windows
+	4.3 habilite plataforma de maquina virtual e subsistema do windows para linux
+5. instale o wsl2 baixado anteriormente
+6. abra o power shell como administrador e defina o wsl2 comp padrão
+	6.1 wsl --set-default-version 2
+7. instale uma distribuição linux pela microsoft store
+	7.1 no meu caso eu escolhi o aplicativo ubunto 20.04 lts como ensinado no treinamento
+8. verifique a lista de distribuições
+	8.1 no power shell digite wsl -l -v
+9. aperte em iniciar na store e faça a sua instalação
+10. agora instale o docker desktop baixado anteriormente
+	10.1 deixe marcado as caixas de dialogo que apontam a integração com wsl2
+11. no aplicativo docker desktop abra configurações/resources/wsl integration
+	11.1 marque a caixa de dialogo enable integration with my defaults
+	11.2 e marque o sistema ubunto baixado
+	11.3 depois aperte em apply e restart
+12. no aplicativo docker desktop abra configurações/general
+	12.1 marque todas as caixas de dialogo e aplique
+13. abra o terminal do ubunto que foi instalado anteriormente
+14. crie uma pasta chamada treinamento
+15. dentro de treinamento clone o git 
+	15.1 git clone https://github.com/rodrigo-reboucas/docker-bigdata.git 
+16. entre na pasta docker-bigdata
+17. use o comando docker-compose pull para baixar as aplicações
+18. liste todas as imagens do docker
+	18.1 docker image ls
+19. agora execute o container
+	19.1 docker-compose up -d
+20. liste os containers 
+	20.1 docker container ls
+21. lista de comandos docker
+	21.1 iniciar todos os serviços em background(-d)
+		docker-compose up -d
+	21.2 parar serviços
+		docker-compose stop
+	21.3 iniciar serviços
+		docker-compose start
+	21.4 matar os serviços
+		docker-compose dowm
+	21.5 apagar todos os volumes sem uso
+		docker volume prune
+	21.6 apagar tudo 
+		docker system prune --all
+22. para visualizar seus containers
+	22.1 ativos
+		docker ps
+	22.2 todos
+		docker ps -a
+23. executar comandos no container
+	23.1 docker exec -it <container><comando>
+24. visualizar logs
+	24.1 logs de um container especifico
+		docker logs <container> 
+	24.2 logs do docker compose em execução
+		docker-compose logs
+25. enviar arquivos
+	25.1 docker cp <diretorio><container>:/<diretorio>
+26. acesso ao container namenode
+	26.1 docker exec -it namenode bash
+27. acesso ao container do hive
+	27.1 docker exec -it hive-server bash
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

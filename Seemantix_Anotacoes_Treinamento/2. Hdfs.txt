@@ -1,0 +1,72 @@
+1. para inserir os comandos do hdfs usa-se
+	1.1 hdfs dfs <comando>
+2. para criar um diretorio no hdfs usa-se
+	2.1 hdfs dfs mkdir
+3. para criar uma estrutura de diretorios usa-se
+	3.1 hdfs dfs mkdir -p <dir>/<dir>/<dir>
+4. para listar um diretorio e diretorio de forma recursiva
+	4.1 hdfs dfs ls
+	4.2 hdfs dfs ls -R
+5. para remover arquivos usa-se
+	5.1 hdfs dfs rm <dir>
+	5.2 hdfs dfs rm -r -> para deletar de forma recursiva
+	5.3 hdfs dfs rm -r -skipTreash -> para deletar da lixeira e permanente
+6. para enviar da maquina para o hdfs usa-se
+	6.1 hdfs dfs put <local da maquina> <destino>
+	6.2 hdfs dfs put <local da maquina> <destino> -f -> para sobescrever o destino
+	6.3 hdfs dfs put <local da maquina> <destino> -l -> forçar um fator de replicação
+7. para mover o arquivo do local para o hdfs
+	7.1 moveFromLocal <local da maquina> <destino>
+8. para receber os dados do hdfs para o local
+	8.1 hdfs dfs get <local da maquina> <destino>
+	8.1 hdfs dfs get <local da maquina> <destino> -f -> para sobreescrever
+9. para mover varios arquivos mesclados
+	9.1 hdfs dfs getmerge <local da maquina> <destino>
+10. para mover do hdfs para o local
+	10.1 hdfs dfs moveToLocal <local da maquina> <destino>
+11. para copiar arquivos dentro do hdfs (todos funcionam com -f)
+	11.1 hdfs dfs cp <local> <destino>
+12. para mover arquivos dentro do hdfs (todos funcionam com -f)
+	12.1 hdfs dfs mv <local> <destino>
+13. para mostrar o uso de disco hadoop
+	13.1 hdfs dfs du -h <diretorio>
+14. exibir o espaço livre
+	14.1 hdfs dfs df -h <diretorio>
+15. mostrar informações do diretorio
+	15.1 hdfs dfs stat <diretorio>
+	15.2 exemplos
+		hdfs dfs -stat %r name.txt #fator de replicação
+		hdfs dfs -stat %o name.txt #tamanho do bloco
+16. contar o numero de diretorios; numero de arquivos; tamanho dos arquivos
+	16.1 hdfs dfs -h <diretorio>
+17. esvaziar lixeira
+	17.1 hdfs dfs expunge
+18. ver conteudo do arquivo
+	18.1 hdfs dfs cat <arquivo>
+19. alterar o fator de replicação
+	19.1 hdfs dfs setrep <n° rep> <arquivo>
+20. criar um arquivo de registro com data e hora
+	20.1 hdfs dfs touchez <diretorio>
+21. retorna as informações de soma de verificação de arquivo
+	21.1 hdfs dfs checksum <arquivo>
+22. mostra o ultimo 1kb do arquivo no console
+	22.1 hdfs dfs -tail [-f] <arquivo>
+23. mostra o primeiro 1kb do arquivo
+	23.1 hdfs dfs -cat <arquivo> | head -n 1
+24. localiza a informação que corresponde à expressão
+	24.1 hdfs dfs -find <caminho> <o que procurar> -print
+		hdfs dfs -find input/semantix -iname Data -> para nao diferenciar maisc com minusc
+		hdfs dfs -find input/semantix -name Data -> difere maisc de minusc
+		hdfs dfs -find input/semantix -iname \*.txt -> procura todos os arquivos txt 
+
+
+
+
+
+
+
+
+
+
+
+

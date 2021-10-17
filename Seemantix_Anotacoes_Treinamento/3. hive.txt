@@ -1,0 +1,286 @@
+1. trabalha com sql dentro de big data
+
+2. e um datawarehouse construido em cima do hadoop
+
+3. não e um ssgbd
+
+4. permite facil acesso aos dados usando sql
+
+5. tudo que tiver dentro do hdfs pode ser consultado pelo hive usando sql
+
+6. não é projetado para fornecer respostas em tempo real
+
+7. é feito para um grande conjunto de dados
+
+8. o hive funciona em cima do mapreduce tradicional
+
+9. componentes
+	9.1 HCatalog
+		° camada de gerenciamento de atmazenamento para o hadoop
+		° permite que outras ferramentas leiam e gravem os dados
+	9.2 WebHcat
+		° servidor web para se conectar com o metastore do hive
+	9.3 HiveServer2(hs2)
+		° servidor que permite que clientes executem consultas no hive
+	9.4 Metastore
+		° e onde fica os metadados da tabela
+	9.5 Beelive
+		° cliente que se conecta ao hs2
+
+10. comandos
+	10.1 listar os bd
+		° show database;
+	10.2 estrutura sobre o bd
+		° desc database <nome do bd>;
+	10.3 listar as tabelas
+		° show tables;
+	10.4 estrutura da tabela
+		° desc <nome da tabela>;
+		° desc formatted <nome da tabela>;
+		° desc extended <nome da tabela>;
+	10.5 criar um bd
+		° create database <nome do banco>;
+	10.6 comentario
+		° create database <nome do banco> comment "..."
+
+11. as tabelas podem ser internas e externas e não particionadas e particionadas
+
+12. as prticionadas se dividem em dinamicas e estaticas
+
+13. uma tabela inter possui os dados e os metadados e se for deletada apaga tudo
+	13.1 criar tabela interna
+		° create table user(id int, nome string);
+	13.2 dropar a tabela apaga todos os dados e os metadados
+		° drop table user;
+
+14. uma tabela externa voce mapeia os dados para algum lugar e se for apagado apaga 
+apenas os metadados.
+	14.1 criar tabelas externas
+		° create external table user(id int, nome string) location '/user/
+antonio/data/';
+	14.2 dropar a tabela (13.2) apaga apenas os seus metadados
+
+15. o hive é um conector de arquivos diferentes, suportando varios tipos
+	15.1 csv, tsv, parque, orc, aur etc
+
+16. os dados do hive podem ser estruturados ou semi estruturados
+
+17. arquitetura
+	1 database -> 2 table -> 3 partition (coluna de armazenamento no hdfs) ->
+4 bucket (dados sao divididos em colunas atraves de hash)
+	17.1 exemplo de um caminho de arquitetura hive
+		° /user/hive/warehouse/nome do banco/tabela/partição/bucket
+
+18. tipos de dados 
+	18.1 int, smallint, tinyint, bigint, boolean, float, double, decimal, string, varchar, char
+	18.2 dados complexos
+		° array -> []
+		° map -> 'nome'-> 'rodrigo'
+		° struct(define os campos dos seus tipos de daods)-> STRUCT<name:datatype,...>
+		° union(armazena diferentes tipos de dados no mesmo local)-> data_type,data_type
+
+19. leitura de dados
+	19.1 definir delimitadores
+		° row format delimited +
+		° fields terminated by '<delimitador>'
+		° lines terminated by '<delimitador>'
+		° delimitadores: "qualquer coisa", \b(backspace),\n(new line),\t(tab)
+	19.2 pular um número de linhas de leitura
+		° tblproperties("skip.header.line.count"="<numero de linhas");
+	19.3 definir localização dos dados(tabelas externas)
+		° location 'caminho';
+
+20. exemplo de criação de tabela
+	create external table user (id int, nome String, age int)
+		° row format delimited
+		° filed terminated by '\t'
+		° lines terminated by '\n'
+		° stored as textfile
+		° tblproperties("skip.header.line.count"="1")
+		° location '/user/cloudera/data/client';
+
+21. para acessar o hive
+	21.1 docker exec -it hive-server bash
+	21.2 beeline -u jdbc:hive2://localhost:10000 
+
+22. para inserir dados
+	22.1 insert into table <nome da tabela> partion(<partition>='<values>') values(<campo>,<value>),(<campo>,<value>)...
+
+23. pode-se colocar dados de uma tabela na outra
+	23.1 ex: insert into users select * from cliente;
+
+24. para carregar dados de algum diretorio
+	24.1 carregar dados do sistema local
+		° load data local inpath <diretorio> into table <tabela>
+	24.2 dentro do particionamento
+		° load data inpath <diretorio> overwrite into table <tabela> partition(id)
+
+25. seleção de dados
+	25.1 select * from <nome da tabela>
+		<where ...>
+		<group by ...>
+		<having ...>
+		<order by ...>
+		<limit n ...>
+		<etc...>
+	25.2 inner join, left outer, right outer, full outer
+		° ex: select * from a join b on a.valor = b.valor
+	25.3 views
+		° ex: create view <nome da view> as select * from <nome da tabela>;
+
+26. o particionamento pega dados repetidos (grupos) e os fatias em arquivos diferentes
+	26.1 o particionamento em grupos é separar os dados duplicados (estado, genero, categoria etc...)
+
+27. a tabela pode ser definida como:
+	27.1 partição
+		° um campo que não esta na sua tabela
+		° organizar os dados
+		° as consultas irão interpretar os dados como coluna
+			-> select * from user where <particao>==SP
+
+28. para criar a partição você pega o campo que vai ser retirado da sua tabela e usa no comando
+	28.1 partitioned by (<campo><tipo>)
+	28.2 esse comando é usado na lista de comandos do create table
+
+29. bucket
+	29.1 divide os dados particionado em mais dados
+	29.2 o campo precisa existir na tabela
+	29.3 comando na criação da tabela
+		° clustered by <campo> into <qtd> buckets
+
+30. exemplo de criação de partição
+	create table user (id int, nome String, idade int) 
+	partitioned by (data String) 
+	clustered by (id) into 4 buckets;
+
+31. tipos de particionamento
+	31.1 estatico
+		° insere individualmente os arquivos na tabelea de partição
+		° cria novas partições manualmente
+		° comando
+			-> alter table <nome da tabela> add partition(<partiçao>=<valor>)
+		° exemplo	
+			-> alter table logs add partition(data='2020-21-02');
+	31.2 dinamica
+		° particiona os dados automaticamente no tempo de carregamento dos dados
+		° as partiçoes podem ser criadas dinamicamente, sendo criadas se nao existirem ou se ja existirem os dados são adicionados nelas
+		° para usar a partição dinamica tem que se habilitar
+			-> SET hive.exec.dynamic.partition = true;
+			-> SET hive.exec.dynamic.partition.mode = nonstrict;
+
+32. comandos uteis de particionamento
+	32.1 visualizar partições de uma tabela
+		° show partition user;
+	32.2 excluir partições de uma tabela
+		° alter table user drop partition (cidade = 'SP')
+	32.3 alterar o nome de uma partição 
+		° alter table user partition cidade rename to partition estado;
+
+33. para reparar uma tabela 
+	33.1 msck repair table <nome da tabela>
+
+34. arquivos 
+	34.1 text file
+		° arquivos de texto
+		° facilidade de compartilhar dados do hadoop com outros programas externos
+		° menos eficiente e mais pesado que outros formatos
+		° facilidade na edição
+		° tipo padrão do hive e do sqoop
+		° exemplos: csv, tsv, json, xml, txt
+	34.2 sequence file
+		° arquivos de sequencia do haddop
+		° mais eficiente que os arquvivos de texto
+		° formado por pares de chave e valor
+		° ele possui um formato binário
+		° facilidade para compartilhar informações com outros programas do haddop
+	34.3 rc file (record colunnar file)
+		° primeiro formato de arquivo colunar do hadoop que é formado por grupos de colunas
+		° aramzenamento horizontal dos dados
+		° vantagens: agilidade para o carregamento e processamento dos dados, e armazenamento mais eficiente
+		° desvantagens: utiliza mais memória e nao suporta evolução do schema
+	34.4 orc file (optimized row colunnar file)
+		° subistitui o formato rc file sendo mais eficiente na sua compressão
+		° possui as mesmas caracteristicas do rc file
+		° ele é otimizado para o hive formando faixas de grupos de dados por linha
+		° não é usado para outros programas de mao-reduce como o pig e o impala
+	34.5 avro
+		° formato serializado com linguagem neutra, eficiente para trafego na rede
+		° armazena os dados e os metadados juntos
+		° vantagens: suporta todos os tipos de map-reduce e suporta evolução de schema
+	34.6 parquet
+		° formato colunar igual ao orc e rc file
+		° suporta todos os tipos de map reduce (hive, pig, java)
+		° suporta processamento (spark e impala)
+		° suporta evolução de schema (impala e hive)
+
+35. compressão
+	35.1 precisa balancear o armazenamento e a velocidade
+	35.2 Zlib(Gzip)
+		° possui uma alta compressão mas uma baixa leitura dos dados
+		° usando quando voce so precisa guardar os arquivos, ou os não processa com constancia
+	35.3 snappy
+		° possui uma baixa compressão mas uma alta leitura dos dados
+		° usado quando você precisa processar muitos os arquivos de forma constante
+
+35. para adicionar um tipo diferente de arquivo
+	35.1 na criação da tabela em stored as <formato do arquivo>
+		° TEXTFLIE
+		° SEQUENCEFILE
+		° RCFILE
+		° ORC
+		° AVRO
+		° PARQUET
+		° JSONFILE
+
+36. para setar as configurações de compressão manualmente usa-se os comandos no hive (caso não esteja configurado)
+	36.1 SET hive.exec.compress.output=true;
+	36.2 SET mapred.output.compression.codec=<codec>;
+		° os codec são :
+		° gzip: org.apache.hadoop.io.compress.GzipCodec;
+		° bzip2: org.apache.hadoop.io.compress.BZip2Codec;
+		° lzo: com.hadoop.compression.lzo.LzopCodec;
+		° snappy: org.apache.hadoop.io.compress.SnappyCodec;
+		° deflate: org.apache.hadoop.io.compress.DeflateCodec;
+	36.3 SET mapred.output.compression.type=BLOCK;
+
+37. para adicionar uma compressão
+	37.1 stored as <formatoDoArquivo> tblproperties('formatoDoArquivo.compress'='<compressaoArquivo>')
+		° <compressaoArquivo> :
+		° GZIP
+		° BZIP2
+		° LZO
+		° SNAPPY
+		° DEFLATE
+
+38. exemplo de tabela final com configurações de arquivo e compressão
+	create table user(
+		id int,
+		name String,
+		age int)
+		partitioned by (data String)
+		clustered by (id) into 256 buckets
+		stored as parquet tblproperties('parquet.compress'='SNAPPY');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

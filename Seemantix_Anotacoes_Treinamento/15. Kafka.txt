@@ -1,0 +1,200 @@
+1. o kafka é uma plataforma de stran dostribuida
+	1.1 permite publicar e assinar uma strean de registros
+	1.2 fluxo de serviços
+		-> processar 
+			- em tempo real
+		-> armazenar
+			- tolerante a falhas
+
+2. o kafka não faz só mensageria, ele tambem armazena
+
+3. kafka cluster
+	3.1 o kafka e desenvolvido em scala e java
+	3.2 o kafka funciona como um cluster em um ou mais servidores que podem abranger vários data centers
+	3.3 o cluster kafka armazena fluxos de registros em categorias denominadas tópicos 
+	3.4 cada registro consiste em uma chave, um valor e registro de data e hora 
+	3.5 o kafka é um gerenciador de fluxos de dados em tempo real gerados a partir de sites, sensores, aplicações e etc
+
+4. o kafka funciona a partir de APIS que englobam o kafka cluster
+	4.1 Producer API	
+		-> permite que uma aplicação publique um fluxo de registros em um ou mais tópicos do kafka
+	4.2 Consumer API
+		-> permite que uma aplicação assine um ou mais tópicos e processe os fluxos de registros produzidos por eles
+	4.3 Streans API
+		-> permite que o aplicativo tranforme fluxos de entra em fluxos de saida
+	4.4 Connector API
+		-> permite criar e executar produtores ou consumidores reutilizaveis que conectam tópicos do kafka a aplicativos ou sistemas existentes
+
+5. portas padrões
+	broker -> 9092
+	confluente control center -> 9021
+	conecte rest api -> 8083
+	ksql server rest api -> 8088
+	rest proxy -> 8082
+	shcema register rest api -> 8081
+	zookeper -> 2181
+
+6. broker
+	6.1 dentro do broker existem tópicos, que são responsaveis por receber o fluxo dos registros
+	6.2 dentro do topico existem partições que são armazenadas as informações
+	6.3 cada partição possui um hash imutavel, e cada registro possui um id sequencial (offset)
+	6.4 cada topico pode ser consumido por 0..n consumidores
+	6.5 os corretores são servidores que armazenam os tópicos, e cada um possui um id unico
+	6.6 cada partição fica em um broker diferente
+	6.7 replicação dos tópicos
+		-> cada broker possui uma partição e outras 2 de replicação, ou seja, uma partição pode ser replicada em diversos broker diferentes
+		-> as replicas nunca podem ser colocadas no mesmo broker da partição lider
+
+7. produtores
+	7.1 são os que enviam os dados para as partições, são responsaveis por publicar os dados nos tópicos
+	7.2 escolher qual registro vai para qual partição no broker
+	7.3 confirmação da escrita acks
+		-> 0 - sem confirmação de escrita
+		-> 1 - confirmação de escrita do lider
+		-> all - confirmação de escrita do lider e das réplicas
+	7.4 
+
+8. consumidores
+	8.1 responsaveis por receber os dados
+	8.2 cada registro em um tópico pode ser entregue a um grupo de consumidores (consumer groups)
+	8.3 grupos de consumidores
+		-> se todas as instancias de consumidores estiverem no mesmo grupo de consumidor
+			- registro balanceado por carga
+		-> se cada todas as instancias de consumidores estiverem em grupos de consumidores separados
+			- cada registro será transmitido para todos os processos (consumidores)
+
+9. control center
+	9.1 interface gráfica para monitoramento e gerenciamento do kfka (cofluente)
+	9.2 para acessar use http://ip_maquina:9021
+	9.3 criar tópicos utilizando a interface gráfica
+		-> configurações do topico
+			- configuração simples
+				§ nome
+				§ partição
+			- outras configurações
+				§ availability
+				§ cleanup pilicy
+				§ message size
+		-> disponibilidade
+			- maxima
+				§ fator de replicação - 3
+				§ minimo de replicas de sincronização - 1
+			- equilibrada
+				§ fator de replicação - 3
+				§ minimo de replicas de sincronização - 2
+			- moderada
+				§ fator de replicação - 2
+				§ minimo de replicas de sincronização - 1
+			- baixa(nao usar em produção)
+				§ fator de replicação - 1
+				§ minimo de replicas de sincronização - 1
+		-> para criar no control center
+			- cluster - topics - add topics 
+				§ configuração padrao
+				§ customize setings
+	9.4 para mudar a configuração do cluster
+		-> cluster - cluster settings
+
+10. gerenciar topicos por linha de comando
+	10.1 listar topicos
+		-> kafka-topics --bootstrap-server localhost:9092 --list
+		-> kafka-topics --zookeeper localhost:2181 --list
+	10.2 criar topico
+		-> kafka-topics --bootstrap-server localhost:9092 --topic <nome do topico> --create --partitions 3 --replication-factor 1
+	10.3 descrever topico
+		-> kafka-topics --bootstrap-server localhost:9092 --topic <nome do topico> --describe
+	10.4 deletar topico
+		-> kafka-topics --bootstrap-server localhost:9092 --topic <nome do topico> --delete
+
+11. consumer console
+	11.1 receber mensagens em tempo real
+		-> kafka-console-consumeer --bootstrap-server localhost:9092 --topic <nome do topico>
+	11.2 receber mensagens desde o inicio
+		-> kafka-console-consumeer --bootstrap-server localhost:9092 --topic <nome do topico> --from-beginning
+	11.3 criar grupo de consumidores 
+		-> kafka-console-consumeer --bootstrap-server localhost:9092 --topic <nome do topico> --group <nome do grupo>
+
+12. grupo de consumidores
+	12.1 listar grupos
+		-> kafka-consumer-groups --bootstrap-server localhost:9092 --list 
+	12.2 descrever grupo
+		-> kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group <nome do grupo>
+	12.3 redefinir o deslocamento do mais antigo
+		-> kafka-consumer-groups --bootstrap-server localhost:9092 --group <nome do grupo> --reset-offsets --to-earliest --execute --topic <nome do topico>
+	12.4 alterar o deslocamento 
+		-> kafka-consumer-groups --bootstrap-server localhost:9092 --group <nome do grupo> --reset-offsets --shift-by 2 --execute --topic <nome do topico>
+
+13. produtores console
+	13.1 enviar dados
+		-> kafka-console-producer --broker-list localhost:9092 --topic <nome do topico>
+	13.2 enviar dados para todos reconhecerem (leader isr)		 
+		-> kafka-console-producer --broker-list localhost:9092 --topic <nome do topico> --producer-property acks=all
+
+14. kafka connect 
+	14.1 é uma estrutura para conectar o kafka a sistemas externos
+		-> banco de dados, indices de pesquisa, sistema de arquivos
+	14.2 tipos de conectores
+		-> source connector: envia dados do sistema externo para os tópicos kafka
+		-> sink connector: envia os dados dos topicos do kafka para o sistema externo
+	14.3 execução
+		-> processo autonomo para executar tarefas em uma unica maquina
+		-> serviço distribuido, escalavel e tolerante a falhas 
+	14.4 para instalar componentes
+		-> docker exec -it connect bash
+		-> confluente-hub install <componente>
+
+15. kafka clientes
+	15.1 biblioteca de cliente para várias linguagens
+	15.2 fornece acesso de baixo nivel para o apache kafka
+	15.3 processamento de strean em alto nivel
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

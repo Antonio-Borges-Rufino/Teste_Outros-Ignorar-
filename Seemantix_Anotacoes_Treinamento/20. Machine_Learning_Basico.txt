@@ -1,0 +1,101 @@
+1. para fazer o processo de modelagem precisa ser feito algumas etapas
+	1.1 Pré-processamento
+	1.2 Modelagem
+	1.3 Avaliação
+
+2. Modelos são dividos em:
+	2.1 Hard Computing
+		-> classificação
+			* Colocar um elemento e falar a qual classe ele pertence
+		-> regressão
+			* Criar um modelo que explique os dados para fazer previsões futuras
+		-> clusterização
+			* Colocar em classes elementos do qual as caracteristicas não são conhecidas
+	2.2 Soft Computing
+		* Algoritmos genéticos
+		* Redes Neurais
+		* Logica Fuzzy
+
+3. Regressão
+	3.1 Tem como caracteristica prever valores continuos
+	3.2 Modelos mais comuns de regressão 
+		-> Regressão linear
+			* y= mx+c
+			* encontrar a reta que melhor descreve os dados
+			* normalmente se usa o método dos minimos quadrados
+		-> Regressão polinomial
+			* A reta nao consegue descrever todos os pontos, para esse problema usa-se a regressão polinomial
+			* colocar mais polinomios para descrever o comportamento dos pontos
+			* Quanto mais polinomios tiver, maior é o custo computacional
+		-> Ridge regression
+			* impoe uma penalidade pra problemas de overffiling, a penalidade é aplicada na soma dos quadrados, somando o quadrado da inclinação da curva aos
+minimos quadrados
+		-> Lasso regression
+			* faz com que a inclinação da reta possa chegar a zero, fazendo com que x independa totalmente de y, ele soma o modulo da inclinação da curva aos
+minimos quadrados
+		-> Stepwise regression
+			* faz um passo a passo de quais variaveis voce vai usar no modelo
+			* e a construção iterativa passo a passo de um modelo de regressão que envolve a seleção de vaqriaveis independentes a serem usadas em um modelo final
+		-> Regressão linear bayesiana
+			* Adicionar incerteza ao modelo, fazendo com que a gnt saiba o quanto se pode se confiar no modelo
+			* possibilita uma elasticidade dos dados, permitindo em vez de um valor fixo colocar um intervalo possivel de valores
+
+4- Classificação
+	4.1 a classificação é um tipo de método que classifica elementos com base em suas caracteristicas
+	4.2 Metodos mais usados
+		-> Logistic regression
+		-> Stochastic Gradient Descent
+		-> Naive Bayes
+		-> K-Nearest Neigbors
+		-> Decison tree
+		-> Random Forest
+		-> Support Vector Machine
+
+5- Clusterização
+	5.1 não precisa conhecer as caracteriticas préviamente
+	5.2 metodos mais usados
+		-> K-means
+			* se baseia na ideia que o centroid ou centro do cluster e uma boa representação do cluster
+		-> Mean-Shift
+			* move-se para a area com maior densidade de pontos montando os cluster a partir disso 
+			* nao precisa informar o numero K
+		-> DBSCAN
+			* começa visitando cada um dos pontos, adicionando uma distancia e atribuindo uma distancia no qual os pontos estão, formando um cluster
+			* se os pontos estiverem distantes das distancias, ele considera um ruido
+			* nao forma cluster de forma circular, pode formar cluster de qualquer forma
+			* nao precisa informar um k
+			* nao performa bem com variações de densidade do cluster
+		-> ExpectionMaximizate (EM) Clustering using gaussian mixture miodels (GMM)
+			* faz um ajuste melhor das gaussianas dentro do cluster
+		-> Hierarchical Clustering		
+			* tem 2 formas, o botton-up ou agregativo, no qual cada ponto é considerado um cluster, e ao longo das iterações ele vai agregando os pontos
+formando cluster ate formar um unico cluster. Na top-down é o processo contrario, todos os pontos iniciam como um unico cluster e ao longo das iterações eles vão se
+separando em clusters menores
+			* basea-se no gráfico de dendograma
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

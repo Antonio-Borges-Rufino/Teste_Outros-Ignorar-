@@ -1,0 +1,101 @@
+==================================================================================
+				1° exercicio
+==================================================================================
+ docker cp input/exercises-data/db-sql/  database:/
+ docker exec -it database bash
+ cd /db-sql/
+ mysql -p secret < employees.sql
+ cd /db-sql/sakila/
+ mysql -p secret < sakila-mv-schema.sql
+ mysql -p secret < sakila-mv-data.sql
+
+==================================================================================
+				2° exercicio
+==================================================================================
+ sqoop list-databases --connect jdbc:mysql://database --username root --password secret
+ sqoop list-tables --connect jdbc:mysql://database/employees --username root --password secret
+ sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "insert into departments values('d010', 'BI')" 
+ sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "select * from departments"
+ sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "create table benefits(cod int(2)  AUTO_INCREMENT PRIMARY KEY, name varchar(30))"
+ sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "insert into benefits values(null,'food vale')"  
+ sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "select * from benefits"
+
+
+==================================================================================
+				3° exercicio
+==================================================================================
+ sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "select * from employees limit 10"
+ sqoop import --table employees --connect jdbc:mysql://database/employees --username root --password secret --warehouse-dir /user/hive/warehouse/db_teste_a
+ hdfs dfs -cat /user/hive/warehouse/db_teste_a/employees/part-m-00002 | head -n 5
+ sqoop import --table employees --connect jdbc:mysql://database/employees --username root --password secret --warehouse-dir /user/hive/warehouse/db_teste_b --where "gender = 'M'"
+ hdfs dfs -cat /user/hive/warehouse/db_teste_b/employees/part-m-00000 | head -n 5
+ sqoop import --table employees --connect jdbc:mysql://database/employees --username root --password secret --columns "first_name, last_name" --warehouse-dir /user/hive/warehouse/db_teste_c --fields-terminated-by '\t'
+ hdfs dfs -cat /user/hive/warehouse/db_teste_c/employees/part-m-00000 | head -n 5
+ sqoop import --table employees --connect jdbc:mysql://database/employees --username root --password secret --columns "first_name, last_name" --warehouse-dir /user/hive/warehouse/db_teste_c -append --lines-terminated-by ':'
+ hdfs dfs -cat /user/hive/warehouse/db_teste_c/employees/part-m-00004 | head -n 5
+
+==================================================================================
+				4° exercicio
+==================================================================================
+ docker exec -it database bash
+ mysql -psecret
+ use employees;
+ create table cp_titles_date select title, to_date from titles;
+ UPDATE cp_titles_date SET to_date = null WHERE title = 'Staff';
+ sqoop import --table titles --connect jdbc:mysql://database/employees --username root --password secret --warehouse-dir /user/hive/warehouse/db_teste_4 -m 8 --as-parquetfile
+ sqoop import --table titles --connect jdbc:mysql://database/employees --username root --password secret --warehouse-dir /user/hive/warehouse/db_teste_5 -m 8 --as-parquetfile --compress --compression-codec org.apache.hadoop.io.compress.SnappyCodec
+ sqoop import -Dorg.apache.sqoop.splitter.allow_text_splitter=true --table cp_titles_date --connect jdbc:mysql://database/employees --username root --password secret --warehouse-dir /user/hive/warehouse/db_teste_6a -m 4 -split-by title
+ sqoop import -Dorg.apache.sqoop.splitter.allow_text_splitter=true --table cp_titles_date --connect jdbc:mysql://database/employees --username root --password secret --warehouse-dir /user/hive/warehouse/db_teste_6b -m 4 -split-by to_date
+
+==================================================================================
+				5° exercicio
+==================================================================================
+ create table cp_rental_append select rental_id, rental_date from rental;
+ create table cp_rental_id select * from cp_rental_append;
+ create table cp_rental_data select * from cp_rental_append;
+ sqoop import --table  cp_rental_append --connect jdbc:mysql://database/sakila --username root --password secret --warehouse-dir /user/hive/warehouse/db_teste3 -m 1
+ sqoop import --table  cp_rental_id --connect jdbc:mysql://database/sakila --username root --password secret --warehouse-dir /user/hive/warehouse/db_teste3 -m 1
+ sqoop import --table  cp_rental_data --connect jdbc:mysql://database/sakila --username root --password secret --warehouse-dir /user/hive/warehouse/db_teste3 -m 1
+ docker exec -it database bash
+ cd /db-sql/sakila
+ mysql -psecret < insert_rental.sql
+ sqoop import --table  cp_rental_append --connect jdbc:mysql://database/sakila --append --username root --password secret --warehouse-dir /user/hive/warehouse/db_teste3 -m 1
+ sqoop import --table  cp_rental_id --connect jdbc:mysql://database/sakila  --username root --password secret --warehouse-dir /user/hive/warehouse/db_teste3 -m 1 --incremental append --check-column rental_id --last-value 16049
+ sqoop import --table  cp_rental_date --connect jdbc:mysql://database/sakila  --username root --password secret --warehouse-dir /user/hive/warehouse/db_teste3 -m 1 --incremental lastmodified --merge-key rental_id --check-column rental_date --last-value '2005-08-23 22:50:12.0'
+
+
+==================================================================================
+				6° exercicio
+==================================================================================
+ sqoop import --table titles --connect jdbc:mysql://database/employees --username root --password secret --warehouse-dir /user/alunos/antonio/data m 1
+ docker exec -it hive-server bash
+ beeline -u jdbc:hive2://localhost:10000
+ create database antonio;
+ sqoop import --table titles --connect jdbc:mysql://database/employees --username root --password secret --warehouse-dir /user/hive/warehouse/antonio -m 1 --hive-import --create-hive-table --hive-table antonio.titles
+ use antonio;
+ select * from titles limit
+ sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "delete from titles"
+ sqoop export --connect jdbc:mysql://database/employees --username root --password secret --export-dir /user/alunos/antonio/data/titles/ --update-mode updateonly --table titles
+ sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "select * from titles limit 10"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

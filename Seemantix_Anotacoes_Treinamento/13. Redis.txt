@@ -1,0 +1,242 @@
+1. redis é um bd com associação de chave e valor
+	1.1 o redis aceita várias estruturas de dados
+
+2. todo o armazenamento do redis é em memória, podendo persistir dados mas sem a mesma função de um bd convencional
+	2.1 o acesso aos dados e bem rápido, por causa do armazenamento em memória
+
+3. a arquitetura redis é cliente servidor tcp
+	3.1 um cliente faz uma requisição para o servidor redis, o servidor executa um comando por vez (atômico)
+	3.2 pode tambem usar o redis-CLI para enviar comandos para o servidor redis	
+	3.3 o redis possui vários clientes que podem acessar (c, java, c++, python, ruby, go e etc...)
+
+4. apos instalar o redis acesse-o pelo docker exec e entao
+	4.1 para acessar o redis cli
+		-> redis-cli
+	4.2 para acessar o server
+		-> redis-server
+
+5. o redis e um servidor que suporta diferente tipos de estruturas de dados
+	5.1 nao e um tipo chave valor simples -> string-string
+	5.2 suporta estruturas mais complexas
+		-> strings, listas, sets, sets ordenados, hash, hyperloglogs, streans
+	5.3 as chaves sao binary safes 
+		-> sequencia binaria
+		-> regas
+			- tamanho maximo de 512mb 	
+				§ nao indicado chave > 1mb
+				§ gastar memoria e largura de banda
+			- dicas
+				§ instanciar "object-type:id"
+				
+6. Tipos de dados: Strings
+	6.1 o unico tipo de dados memcached
+	6.2 cache para paginas web
+	6.3 chaves tambem são strings entao e um mapeamento string para outra string
+	6.4 sintaxe
+		-> SET <nome da chave> <valor da chave>
+		-> SET <nome da chave> <valor da chave> nx -> falha se a chave existir
+		-> SET <nome da chave> <valor da chave> xx -> subistitui se existir
+		-> MSET <nome da chave> <valor da chave> <nome da chave> <valor da chave> ... -> seta varias chaves e valores ao mesmo tempo
+	6.5 para retorar o valor
+		-> GET <nome da chave>
+		-> MGET <nome da chave1> <nome da chave2> <nome da chave3> -> recupera todos os valores das chaves
+	6.6 funções
+		-> strlen <nome da chave> -> tamanho do valor
+		-> incr <nome da chave> -> trata uma string como inteiro e incrementa + 1
+		-> decr <nome da chave> -> trata uma string como inteiro e decrementa - 1
+		-> incrby <nome da chave> <incrementador> -> trata uma string como inteiro e incrementa + <incrementador>
+		-> decrby <nome da chave> <incrementador> -> trata uma string como inteiro e decrementa - <incrementador>
+		-> OBS: OS COMANDOS SÃO FEITOS UM DE CADA VEZ, E SE 2 PESSOAS UTILIZAREM O COMANDO AO MESMO TEMPO, PRIMEIRO VAI SER FEITO 1 DEPOIS O OUTRO
+
+7. operações nas chaves
+	7.1 saber se a chave existe
+		-> exists <nome da chave>
+	7.2 deletar a chave
+		-> del <nome da chave>
+	7.3 saber o tipo da chave
+		-> type <nome da chave>
+
+8. persistencia de chaves
+	8.1 definir tempo para expiração de chaves
+		-> por default não existe tempo de expiração
+		-> definir tempo de expiração em chaves ja criada
+			- expire <nome da chave> <tempo em segundos>
+			- pexpire <nome da chave> <tempo em milissegundos>
+		-> definir tempo de expiração na criação das chaves
+			- set <nome da chave> <valor da chave> ex <tempo em segundos>
+			- set <nome da chave> <valor da chave> px <tempo em milissegundos>
+	8.2 verificar o tempo restante da chave
+		-> ttl <nome da chave> -> resposta em segundos
+		-> pttl <nome da chave> -> resposta em milisegundos
+	8.3 para tirar o tempo de expiração
+		-> persist <nome da chave>
+
+9. implementar um paradigma de mensageria pub/sub
+	9.1 as mensagens nao sao enviadas diretamente para o remetente
+	9.2 as mensagens são publicadas em um canal sem o editor saber quem são os assinantes
+	9.3 sintaxe
+		-> publicar mensagem
+			- publish <canal><mensagem>
+		-> assinar um ou mais canais
+			- subscribe <canal1>...<canaln>
+		-> assinar um padrão de canais
+			- psubscribe <padrão1>...<padrão2>
+			- exemplo: psubscribe canal*
+		-> cancelar o canal
+			- unsubscribe <canal1>...<canaln>
+			- unsubscribe -> cancela todos os canais
+		-> cancelar um canal com padrão
+			- punsubscribe	<padrao1>...<padraoN>
+
+10. configurações básicas
+	10.1 configurações podem ser feitas pelo arquivo redis.conf
+	10.2 para ver as configurações pode ser feito pela aplicação
+		-> config get <parametro> -> ler se um parametro esta ativo
+		-> config get <parametro>* -> ler se um padrão de parametros está ativo
+		-> config get * -> lista todos os parametros e ve se eles tao ativos
+	10.3 OBS: o parametro appendonly salva os dados, quando está ativo ele causa persistencia dos dados
+
+11. configurações com cache
+	11.1 cache lru
+		-> permite que o redis remova os dados mais antigos
+	11.2 principais configurações
+		-> Maxmemory: configurar limite maximo de memória pro dataset
+		-> Maxmemory-policy: politica de uso de memoria quando atingir um limite
+			- TIPOS:
+			- noeviction: retorna erro quando o limte de memoria e atingido
+			- allkeys-lru: remove as chaves menos usadas recentemente
+			- volatile-lru: remove as chaves menos usadas recenetemente com expiração
+			- allkeys-random: remove as chaves aleatoriamente
+			- volatile-radom: remove as chaves aleatoriamente mas so as que possuem tempo de expiração
+			- volatile-ttl: remove as chaves que possuem menor ttl
+		-> maxmemory-sample
+			- usar 5
+	11.3 para configurar sintaxe
+		-> config set maxmemory <tamanho>
+		-> config set maxmemory-policy <tipo>
+		-> config set maxmemory-sample 5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,27 @@
+========================================================================================
+				EXERCICIO 1
+========================================================================================
+ create 'controle', {NAME => 'produto'}, {NAME => 'fornecedor'}
+ put 'controle','1','produto:nome','ran'
+ put 'controle','1','produto:qtd','100'
+ put 'controle','2','produto:nome','hd'
+ put 'controle','2','produto:qtd','50'
+ put 'controle','3','produto:nome','mouse'
+ put 'controle','3','produto:qtd','150'
+ put 'controle','1','fornecedor:nome','TI Comp'
+ put 'controle','1','fornecedor:estado','SP'
+ put 'controle','2','fornecedor:nome','Peças PC'
+ put 'controle','2','fornecedor:estado','MG'
+ put 'controle','3','fornecedor:nome','Inf Tec'
+ put 'controle','3','fornecedor:estado','SP'
+ list 
+ describe 'controle'
+ count 'controle'
+ alter 'controle', {NAME=>'produto',VERSIONS=>3}
+ put 'controle','2','produto:qtd','200'
+ get 'controle','2',{COLUMNS=>['produto:qtd'], VERSIONS=>2}
+ deleteall 'controle', '1'
+ deleteall 'controle', '3'
+ delete 'controle','2','fornecedor:estado'
+ scan 'controle'
+

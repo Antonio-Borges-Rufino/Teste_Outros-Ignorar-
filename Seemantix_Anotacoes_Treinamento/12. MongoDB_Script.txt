@@ -1,0 +1,41 @@
+==================================================================================
+			Exercicio 1
+==================================================================================
+ docker pull mongo
+ docker pull mongo-express
+ docker-compose up -d
+ docker-compose start
+ docker exec -it mongo bas
+ mongo
+ show dbs;
+
+==================================================================================
+			Exercicio 2
+==================================================================================
+ use antonio
+ show dbs
+ use antonio
+ db.createCollection('produto')
+ show dbs
+ show collections
+ db.produto.insertMany([ 
+		{_id: 1, "nome": “cpu i5", "qtd": "15“},
+		{_id: 2, nome: “memória ram", qtd: 10, descricao: {armazenamento: “8GB”, tipo:“DDR4“}},
+		{_id: 3, nome: "mouse", qtd: 50, descricao: {conexao: “USB”, so: [“Windows”, “Mac”, “Linux“]}},
+		{_id: 4, nome: “hd externo", qtd: 20, descricao: {conexao: “USB”, armazenamento: “500GB”, so: [“Windows 10”, “Windows 8”, “Windows 7”]}}
+	 ])
+ db.produto.find().pretty()
+
+==================================================================================
+			Exercicio 3
+==================================================================================
+ db.produto.find().pretty()
+ db.produto.find({nome:{$eq:"mouse"}}).pretty()
+ db.produto.find({qtd:{$eq:20}},{nome:1,_id:0}).pretty()
+ db.produto.find({qtd:{$lte:20}},{nome:1,qtd:1,_id:0}).pretty()
+ db.produto.find({qtd:{$gte:10,$lte:20}}).pretty()
+ db.produto.find({"descricao.conexao": {$eq:"USB"}},{_id:0,qtd:0}).pretty() 
+ db.produto.find({"descricao.so":{$in:["Windows","Windows 10"]}}).pretty() 
+
+
+

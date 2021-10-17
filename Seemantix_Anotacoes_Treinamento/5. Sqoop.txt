@@ -1,0 +1,218 @@
+1. o processo de enviar dados de um sistema local para um sistema distribuido chama-se de ingestão de dados
+
+2. possui 2 formas
+	2.1 batch -> sqoop
+		° seleciona o conjunto de dados e envia
+	2.2 stream -> kafka
+		° processo continuo de enviar dados dados
+
+3. o sqoop é uma ferramenta que realiza a conversa do hadoop (hdfs, hive, hbase) com o banco de dados relacional
+	3.1 Importação de dados
+		° o sqoop pode importar os dados de uma tabela de um SGBD tradicional para dentro do hadoop
+		° esses processos são todos feitos em mapreduce
+	3.2 Exportação de dados
+		° o sqoop tambem exporta os dados do haoop para um SGBD tradicional
+		° capenas o hdfs pode salvar os dados no SGBD, mas a informação do hive e hbase podem ser salvos no hdfs
+
+4. ver o arquivo 5.1 Preparando o BD
+
+5. para realizar comandos sqoop usa-se
+	5.1 sqoop <comando>
+		° help
+		° version
+		° import
+		° import-all-tables
+		° export
+		° validation
+		° job
+		° metastore
+		° merge
+		° codegen
+		° create-hive-table
+		° eval
+		° list-databases
+		° list-tables
+
+6. para acessar o sqoop voce acessa o namenode
+	6.1 docker exec -it namenode bash
+		° sqoop version
+
+7. para acessar os bancos voce precisa ter:
+	7.1 informações para a conexão
+		° Database type (mysql, oracle eetc...)
+		° Hostname
+		° Port number
+		° Database name (list-database)
+
+	7.2 parametros
+		° --connect <conexao>
+			-> HSQLDB: jdbc:hsqldb:*//
+			-> MYSQL: jdbc:mysql://
+			-> ORACLE: jdbc:oracle:*//
+			-> POSTGRES: jdbc:postgresql://
+			-> CUBRID: jdbc:cubrid:*
+		° --username usuario
+		° --password senha
+	7.3 exemplo
+		° sqoop list-databases --connect jdbc:mysql://database --username usuario --password senha
+
+8. o sqoop permite o uso de query direto no banco de dados
+	8.1 comando
+		° sqoop eval --connect jdbc:mysql://database --username usuario --password senha --query "<query sql>" 
+	8.2 outros exemplos:
+		° sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "Select * from employees limit 15" 
+		° sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "create table setor(id int, nome varchar{30})" 
+		° sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "describe setor" 
+		° sqoop eval --connect jdbc:mysql://database/employees --username root --password secret --query "insert into setor values(1,"vendas")" 
+
+9. importação dos dados do banco de dados para o hdfs
+	9.1 o comando é o import
+		° sqoop import
+	9.2 para importar uma tabela inteira
+		° sqoop import --table employees --connect jdbc:mysql://database/employees --username root --password secret
+	9.3 para importar uma coluna especifica
+		° sqoop import --connect jdbc:mysql://database/employees --username root --password secret --columns "id, last_name"
+	9.4 para importar uma linha
+		° sqoop import --connect jdbc:mysql://database/employees --username root --password secret --where "id=1"
+
+10. por padrão o sqoop salva as tabelas dentro do diretorio padrão /user/root
+	10.1 usa-se o comando target-dir para salvar os dados em um unico diretorio
+		° sqoop import --table employees --connect jdbc:mysql://database/employees --username root --password secret --target-dir /user/aluno/antonio/data
+	10.2 usa-se o wareouse-dir para salvar os dados em um diretorio padrão que separa subarquivos dentro do padrão para cada tabela
+		° sqoop import --table employees --connect jdbc:mysql://database/employees --username root --password secret --warehouse-dir /user/aluno/antonio
+	10.3 caso exista o diretorio possui 2 tipos de lidar
+		° -delete-target-dir = sobreescrever os dados
+			-> sqoop import --table ... --warehouse-dir /user/aluno/antonio -delete-target-dir
+			-> sqoop import --table ... --target-dir /user/aluno/antonio -delete-target-dir 
+		° -append = para incluir dados nos ja existentes
+			-> sqoop import --table ... --warehouse-dir /user/aluno/antonio -append 
+			-> sqoop import --table ... --target-dir /user/aluno/antonio -append 
+
+11. por padrão, os delimitadores do sqoop é ',' para campo e '/n' para quebra de linha
+	11.1 pode-se mudar os delimitadores
+		° --fields-terminated-by <delimitador>
+		° --lines-terminated-by <delimitador>
+	11.2 exemplo
+		° sqoop import ... --fields-terminated-by '\t' --lines-terminated-by '&'
+
+12. por padrão, o sqoop divide o job em 4 partes, mas isso pode ser modificado
+	12.1 -m ou -num-mappers <quantidade de mapeadores>
+		° sqoop import ... -m 4
+	12.2 caso sua coluna não possua uma chave primaria, voce deve usar 
+		° sqoop import ... -m 1
+		° sqoop import ... -auto-reset-to-one-mapper
+	12.3 voce tambem pode usar o split by em uma coluna de referencia
+		° sqoop import ... -m 1 --split-by id
+
+13. por padrão o sqoop trabalha dados nulos como a string null
+	13.1 para mudar de string null para um numero 
+		° sqoop import ... -null-non-string '-1'
+	13.2 para mudar de string null para outra string
+		° sqoop import ... -null-string '\N'
+
+14. por padrão o sqoop armazena seus dados todos em arquivos do tipo texto
+	14.1 para o tipo parquet
+		° --as-parquetfile
+	14.2 para o tipo avor
+		° --as-avrodatafile
+	14.3 para o tipo sequence
+		° --as-sequencefile
+
+15. por padrão o sqoop não comprime os dados, mas se ativado, comprime de forma padrão para gzip
+	15.1 para ativar a compressão padrão
+		° sqoop import ... --compress
+	15.2 para adicionar uma compressão diferente
+		° sqoop import ... --compress --compression-condec <codec de compressão>
+		 	-> bzip2: org.apache.hadoop.io.compress.BZip2Codec;
+		 	-> lzo: com.hadoop.compression.lzo.LzopCodec;
+		 	-> snappy: org.apache.hadoop.io.compress.SnappyCodec;
+		 	-> deflate: org.apache.hadoop.io.compress.DeflateCodec;
+
+16. jobs salvam os comandos de importação e exportação automatizando o trabalho	
+	16.1 o principal do job é fazer a importação incremental
+	16.2 comando
+		° sqoop job --create <job id> -> para criar um job
+		° sqoop job --list -> lista os jobs 
+		° sqoop job --exe <job id> -> executa um job
+		° sqoop job --show <job id> -> detalha o job
+		° sqoop job --delete <job id> -> deleta o job
+	16.3 exemplo
+		° sqoop job --create myjob sqoop import --table employees --connect jdbc:mysql://database/employees --username root --password secret --warehouse-dir /user/hive/warehouse/db_teste_a
+	
+17. CARGA INCREMENTAL (IMPORTANTE)
+	17.1 a carga incremental é quando você nao sobreescreve os dados, e sim os incrementa
+	17.2 tipos de carga incremental
+		° append
+			-> quando você cria outro arquivo com todos os dados + os novos
+			-> sqoop import ... --append where "id > 100"
+		° incremental - append
+			-> quando voce cria outro arquivo apenas com os dados novos, para isso, é preciso uma coluna de chave primaria e um valor de referencia
+			-> sqoop import ... --incremental append (--check-column id_venda --last-value 50). () = coluna de chave primeira e valor de referencia
+		° incremental - lastmodified
+			-> nesse caso não se cria um novo arquivo, ele atualiza no arquivo já existente	
+			-> ele usa parametros de data, então só pode ser usado quando se tem colunas de datas
+			-> tambem precisa de uma coluna de chave primaria para poder se localizar
+			-> no caso, a coluna de chave primaria vai para o campo --marge-key e a coluna de data vai para --check-column
+			-> sqoop import ... --incremental lastmodified --marge-key id --check-column data --last-value '2021/01/01'
+
+18. o sqoop ja é pré configurado para trabalhar com tabelas hive e java, bastando apenas importar para os seus diretorios, como no hive que é /user/hive/warehouse
+	18.1 em algumas excessões podemos precisar mapear manualmente as colunas 
+		° Hive -> sqoop import ... --map-column-hive id=Integer nome=String
+		° Java -> sqoop import ... --map-column-java id=Integer nome=String
+
+19. importação direta para o hive
+	19.1 o sqoop permite uma importação direta do sgbd para o hive 
+	19.2 comandos
+		° --hive-import -> importar tabela para o hive
+		° --hive-overwrite -> soobrescreve os dados caso a tabela exista
+		° --create-hive-table -> o job falha se a tabela existir
+		° --hive-table <nome bd>.<nome da tabela> -> especificar uma tabela
+	19.3 exemplo
+		° sqoop import --table rental --connect jdbc:mysql://database/sakila --username root --password secret --warehouse-dir /user/hive/warehouse/db_teste --hive-import --create-hive-table --hive-table teste.user
+
+20. para exportar dados para um sgbd você só pode exportar do hdfs
+	20.1 para exportar usa-se o comando export
+		° sqoop export --connect ... 
+	20.2 possui algumas opções tambem
+		° sqoop export ... --export-dir <diretorio> -> definir o diretorio de leitura no hdfs
+  		° sqoop export ... --table <nome_tabels> -> definir o nome da tabela do sgbd (ela precisa existir)
+		° sqoop export ... --update-mode <modo de update> -> definie como as linhas serão inseridas
+			-> updateonly (default) :-> acrescenta novas linhas da tabela, cada registro e um insert
+			-> allowinsert :-> verifica se a linha ja existe, se sim a atualiza, se nao, a insere como insert
+	20.3 exemplo
+		° sqoop export --connect jdbc:mysql://database/employees --username root --password secret --export-dir /user/root/recomender_output --update-mode updateonly --table product_recomendad
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

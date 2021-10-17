@@ -1,0 +1,368 @@
+1. o objetivo da analise de dados e entender o que aconteceu, preve o que aconteceu
+
+2. estatistica descritiva
+	-> descrever, representar e resumir os dados visualmente
+	-> gerar insaghts sobre os fenomenos observados
+
+3. conceitos basicos
+	-> população
+		- conjunto de pessoas, objetos, transações que possuem caracteristicas que estamos interessados em estudar
+	-> amostra
+		- subconjunto representativo de uma população
+	-> unidade amostral
+		- objeto sobre o qual coletamos informação
+	-> variavel
+		- caracteristicas de uma unidade amostral
+	-> outliers ou valores atipicos
+		- pontos de dados que diferem significativamente da maioria
+			§ variação natural
+			§ mudança no comportamento do sistema observado
+			§ erro na coleta de dados
+
+4. Natureza da variaveis
+	-> qualitativa
+		- descreve qualidades
+		- Nominal (sem ordenação): região geografica, estado civil 
+		- ordinal (com ordenação): grau de instrução, estagio de uma doença
+	-> quantitativa
+		- descreve quantidade
+		- discreta (processo de contagem): valores finitos em um intervalo de tempo
+			§ sementes germinadas/area
+			§ pacientes que se recuperam/hora
+			§ mortos por covid/dia
+		- continua (processo de medição): valores infinitos em um intervalo de tempo
+			§ rendimento/ mes de investimento
+			§ consumo/ mes de energia
+
+5. processo CRISP-DM
+	-> processo padrão para analise de dados
+	-> estrutura
+		(1) entendimento do problema/definir objetivos/ planejas etapas
+		(2) entendimento dos dados/ identifica fontes/ especiona/ organiza/ ver relevancia do problema (analise descritiva) 
+		(3) preparação dos dados /limpeza e tranformação / analise exploratoria (2)
+		(4) modelagem dos dados
+		(5) avaliação do modelo
+		(6) desenvolvimento
+
+6. caracteristicas importantes para qulquer conjunto de dados
+	6.1 centro, variação, distribuição e valores atipicos
+
+7. Medidas de posição ou localização
+	7.1 media: ponto de equilibrio dos dados
+		-> a media amostral e definida por: Somatorio dos valores observados / tamanho de amostra -> (x1+x2...xn)/n
+		-> vantagens
+			- tem boas propriedades estatisticas
+			- facilidade de calculo e compreensão
+		-> desvantagens
+			- sofre influencia de valores atipicos
+			- bastante afetada por conjunto de dados assimétricos
+			- so pode ser calculada por conjunto de dados quantitativos
+	7.2 mediana: centro dos dados
+		-> posição central dos dados ordenados
+		-> se a amostra e impar: p=(n+1)/2
+		-> se a amostra for par: p=n/2 e p+1 = (n/2)+1
+		-> vantagens:
+			- mais resistentes a valores atipicos
+			- pouco afetada por distribuições assimetricas
+		-> desvantagens
+			- menos conhecida que a media
+			- nao possui boas propriedades estatisticas
+	7.3 moda : ponto de concentração dos dados
+		-> e o valor com maior frequencia no conjunto de dados
+		-> pode ter uma moda, mais de uma moda ou nem possuir moda
+		-> vantagens
+			- nao exige calculo
+			- determinada para variaveis qualitativas
+		-> desvantagens
+			- nao representa o conjunto de dados totais
+			- nao tem boas propriedades estatisticas
+	7.4 quantis: caracterização da distribuição dos dados
+		-> indicam limites para a proporção de observação de um conjunto
+		-> quartis: dividem o conjunto em 4 partes iguais
+		-> decis: dividem o conjunto em 10 partes iguais
+		-> centis: dividem o conjunto em 100 partes iguais
+
+8. Medidas de assimetria
+	8.1 distribuição simetrica: media = mediana = moda
+	8.2 distribuição assimetrica a direita: moda < mediana < media 
+	8.3 distribuição assimetrica a esquerda: media < mediana < moda
+
+9. quando usar media, mediana, moda
+	9.1 media: maior a eficiencia quanto mais simetrica for a distribuição dos dados
+	9.2 mediana: mesmo com valores assimetricos em torno da media, ela será o centro da distribuição
+	9.3 moda: quando é interessante conhecer os valores que mais se repetem no conjunto de dados
+
+10. Medidas de disperção
+	10.1 indicam o quanto os valores diferem entre si ou o quanto elas se afastam da media
+		-> amplitude, desvio padrao, variancia, coeficiente de variação
+	10.2 amplitude
+		-> e representada por xn-x1
+		-> desvantagens
+			- pouco precisa
+			- extremamente influenciada por valores descrepantes
+	20.3 variancia amostral
+		e representada por: soma(Xi - media)²/n-1
+		-> vantagens
+			- facilidade de compreensão
+			- propriedades estatisticas importantes para a inferencia
+			- considere o desvio = (Xi-media), que mede o quanto cada valor desvia da média
+		-> desvantagens
+			- calcula a partir da media, medida pouco resistente, ou seja, muito influenciada por valores atipicos
+			- interpretação dificil, pois o valor da variancia é a unidade de medida da variavel ao quadrado. ou seja, se a variavel y e a altura em cm
+a variancia é a altura em cm²
+	20.4 desvio padrão amostral
+		-> surge para solucionar o problema da dificuldade de interpretação da variancia
+		-> e dada por: raiz(soma(Xi - media)²/n-1)
+		-> sognifica o quanto cada observação ta se distanciando da média
+	20.5 coeficiente de variação (CV)
+		-> medida de variablidade dos dados em relação a média
+		-> e uma medida adimensional, e geralmente representada na forma de porcentagem
+		-> ideal para comparar a variabilidade de variaveis em unidade de medidas diferentes
+		-> e dada por:  (desvio padrão/media)*100
+		-> regras
+			- dispersão baixa: CV < 15%
+			- dispersão media: CV >= 15% and CV < 30%
+			- dispersão alta: CV > 30%
+
+11. Medidas de associação
+	11.1 qual tipo de relacionamento entre variaveis?
+	11.2 qual a intensidade da relação?
+	11.3 covariancia
+		-> representa o quanto x e y estão variando em conjunto
+		-> dada por: soma((Xi-Xmedia)*(Yi-Ymedia))
+		-> covariancia positiva: relação de x e y na mesma direção
+		-> covariancia negativa: relação de x e y em direções opostas
+	11.4 coeficiente de relação de person (r)
+		-> quantifica a covariancia
+		-> dada por: r= covariancia/XdesvioPadrao * YdesvioPadrão
+		-> deve ser calculada quando existe uma relação linear entre X e Y
+		-> interpretação
+			- r positivo: correlação positiva ou direta de X e Y
+			- r negativo: correlação negativa ou inversa de X e Y
+			- ausencia de correlação (não implica independencia) = 0
+			- correlação fraca: 0 < r <= 0,4
+			- correlação regular: 0,4 < r <= 0,6
+			- correlação boa:  0,6 < r <= 0,8
+			- correlação alta: r > 0,8
+			- correlação perfeita: r = 1
+			- correlação nao implica causalidade
+				§ o coeficiente nao mede a relação causa efeito das variaveis, mas essa relação pode estar presente 
+		-> desvantagen
+			- por ser em função da media, e altamente afetado por valores atipicos
+	11.5 coeficiente de spearman
+		-> e igual o coeficiente de person aplicado com a ordem de 2 variaveis
+		-> Exemplo: x={7,2,5,9} xr={3,1,2,4} y={5,6,4,3} yr={3,4,2,1}
+			- dada por: r= soma((XRi - XRmedia)*(YRi - YRmedia))/raiz(soma(XRi - XRmedia)²)*raiz(soma(YRi - YRmedia)²)
+		-> vantagens:
+			- nao e sensivel a assimetria e nem a valores atipicos
+			- mede relações lineares e não lineares
+		-> desvantagem:
+			- quando temos muita observações com a mesma ordem (coeficiente de correlação de kendall)
+
+12. biblioteca statics e numpy 
+	import statistics
+	import numpy as np
+	import pandas as pd
+	dados = [28,12,4,2.5,1]
+	dados_sem_outliers_1 = [12,4,2.5,1] 
+	dados_sem_outliers_2 = [4,2.5,1]
+	media_dados = statistics.mean(dados) //calcula a media do array dados	
+	media_dados_sem_out_1 = statistics.mean(dados_sem_outliers_1) //calcula a media do array dados_sem_outlines_1
+	media_dados_sem_out_2 = statistics.mean(dados_sem_outliers_2) //calcula a media do array dados_sem_outlines_2
+	
+	media_dados = statistics.median(dados) //calcula a mediana do array dados	
+	media_dados_sem_out_1 = statistics.median(dados_sem_outliers_1) //calcula a mediana do array dados_sem_outlines_1
+	media_dados_sem_out_2 = statistics.median(dados_sem_outliers_2) //calcula a mediana do array dados_sem_outlines_2
+
+	media_dados = round(statistics.variance(dados),2) //calcula a variancia da amostra	
+	media_dados_sem_out_1 = round(statistics.variance(dados_sem_outliers_1),2) //calcula a variancia da amostra	
+	media_dados_sem_out_2 = round(statistics.variance(dados_sem_outliers_2),2) //calcula a variancia da amostra	
+	media_dados = round(statistics.pvariance(dados),2) //calcula a variancia da população	
+	media_dados_sem_out_1 = round(statistics.pvariance(dados_sem_outliers_1),2) //calcula a variancia da população		
+	media_dados_sem_out_2 = round(statistics.pvariance(dados_sem_outliers_2),2) //calcula a variancia da população
+
+	media_dados = round(statistics.stdev(dados),2) //calcula o desvio padrão da amostra	
+	media_dados_sem_out_1 = round(statistics.stdev(dados_sem_outliers_1),2) //calcula o desvio padrã da amostra	
+	media_dados_sem_out_2 = round(statistics.stdev(dados_sem_outliers_2),2) //calcula o desvio padrã da amostra	
+	media_dados = round(statistics.pstdev(dados),2) //calcula o desvio padrã da população	
+	media_dados_sem_out_1 = round(statistics.pstdev(dados_sem_outliers_1),2) //calcula o desvio padrã da população		
+	media_dados_sem_out_2 = round(statistics.pstdev(dados_sem_outliers_2),2) //calcula o desvio padrã da população	
+
+	media_dados = statistics.mode(dados) //calcula a primeira moda
+	media_dados = statistics.multimode(dados) //calcula todas as modas
+
+	media_dados = statistics.quantiles(dados, n=10, method='inclusive') //calcula os decis
+	media_dados = statistics.quantiles(dados, n=4, method='inclusive') //calcula os quartis
+
+	x_, y_ = np.array(dados_sem_outliers_1), np.array(dados_sem_outliers_2)
+	x__,y__ = pd.Series(x_), pd.Series(y_)
+	covariancia = np.cov(x_,y_) //covariancia entre variaveis
+	covariancia[0,1] //mostra apenas a covariancia entre as variaveis
+	covariancia_em_serie_1 = x__.cov(y__) //encontra a covariancia em series pandas
+	covariancia_em_serie_2 = y__.cov(x__) //encontra a covariancia em series pandas
+
+	matriz_correlacao = np.corrcoef(x_,y_) //encontra a correlação entre as variaveis x e y
+	r = matriz_correlacao[0,1] // mostra so a correlação da matriz
+	r_1 = x__.corr(y__) //encontra a correlação em series
+	r_2 = y__.corr(x__) //encontra a correlação em series
+
+	coeficente_variacao = (statistics.mean(dados)/round(statistics.stdev(dados),2))*100 //calcula o coeficiente de variação
+
+13. analise gráfica
+	13.1 histograma
+		-> estuda variaveis quantitativas e principalmente variaveis continuas
+		-> distribuição de frequencia em intervalos
+		-> mostrar o comportamento das variaveis
+		-> propor distribuição teoricas com objetivo de fazer modelagem
+	13.2 boxplot
+		-> distribuição baseada em quartis
+		-> estuda variaveis quantitativas
+		-> estuda variaveis quantitativas e qualitativas
+		-> comportamento das variaveis
+		-> visualização de outliers
+	13.3 diagrama de dispersão
+		-> relaçao e intesidade entre variaveis
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

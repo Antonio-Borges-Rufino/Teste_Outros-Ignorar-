@@ -1,0 +1,258 @@
+1. antigamente o spark era usado para real time e o mapreduce para batch, mas atualmente ele faz bem os 2
+
+2. ele e uma plataforma de computação em cluster
+	2.1 trabalha os jobs em memória e é completamente compativel com hadoop
+	2.2 possui acesso a todo o cluster do hadoop, conseguindo visualizar as tabelas hive e hbase e hdfs
+	2.3 possui suporte a várias linguagens, scala, python, R e etc...
+
+3. o spark é muito mais rápido que o mapreduce
+	3.1 escala é uma linguagem extremamente performática, trazendo mais velocidade ao processo
+
+4. Strutura
+	4.1 Spark Core - RDD
+		° e para processamento em batch (lote) e etl
+	4.2 Spark SQL
+		° consulta em dados estruturados e semi estruturados
+	4.3 Spark Streaming
+		° processa dados em streaming
+	4.4 Spark Mlib
+		° processa machine learning
+	4.5 Spark GraphX
+		° processa grafos
+
+5. para abrir o spark usa-se spark-shell
+	5.1 no spark shell ele já cria os contextos
+	5.2 o spark context é onde ta o core do spark, onde se faz os processamentos brutos
+	5.3 o spark session é onde ta definida as configurações da sessão que está sendo usada
+	5.4 para sair usa-se :quit
+
+6. DataFrame
+	5.1 um data frame é imutavel, ele nao muda sua forma, para fazer isso precisa criar um outro dataframe
+	5.2 são a representação de dados estruturados e semi-estruturados que assumem uma forma tabular
+	5.3 fazem 2 tipos de operações: Transformação e ação
+	5.4 os data set são evolução de um dataframe, fazendo o ficar mais performático. Coloca ele em um shcema. Isso só acontece em scala
+
+6. Leitura dos dados
+	6.1 Arquivos de textos
+		° CSV
+		° JSON
+		° Plain text
+	6.2 Arquivos binários
+		° Parquet
+		° ORC
+	6.4 Tabelas
+		° Hive Metastore
+		° JDBC 
+	6.5 comando
+		° val <Nome do Dataframe> = spark.read.<formato>("<arquivo>")
+		° <formato>
+			-> textFile("arquivo.txt")
+			-> csv("arquivo.csv")
+			-> jdbc(jdbcUrl,"bd.tabela",connectionProperties)
+			-> load ou parquet("arquivo.parquet")
+			-> table("tabelaHive")
+			-> json("arquivo.json")
+			-> orc("arquivo.orc")
+		° <arquivo>
+			-> "diretorio/"
+			-> "diretorio/*.log"
+			-> "arq1.txt, arq2.txt"
+			-> "arq*"
+
+7. Ações
+	7.1 ação é algo para ser executado na hora
+	7.2 para executar uma ação usa-se
+		° <dataframe>.<ação>
+	7.3 ações
+		° count(): retorna o numero de linhas 
+		° first(): retorna a primeira linha
+		° take(n): retorna as n primeiras linhas como um array (o que ta mais perto da memória)
+		° show(n): retorna as n primeiras linhas
+		° collect(): retorna todas as informações do nó no drive (cuidado para não estourar a memória)
+		° distincts(): retorna todos os registros, excluindo os repetidos
+		° write.<tipo>: salva os dados
+			-> save("arquivoParquet")
+			-> json("arquivoJson")
+			-> csv("arquivoCsv")
+			-> saveAsTable("hiveTable") 
+				: aqui salva no diretorio da tabela hive /user/hive/warehouse
+		° printSchema(): visualiza a estrutura de dados (todo DataFrame possui um schema associado a ele)
+
+8. Transformações
+	8.1 as tranformações modificam os dados, portanto, salva em outros dataframe
+	8.2 para fazer uma tranformação usa-se
+		° val <novo dataFrame> = <dataFrame>.<Transformação>.<Transformação>.<Transformação>...
+		° voce pode fazer uma ou várias tranformações em um df
+	8.3 tranformações
+		° select
+			-> val dfN = dfA.select("nome","qtd")
+		° where
+			-> val dfN = dfA.where("qtd > 50")
+		° groupby.<função de agregação>
+			-> val dfN = dfA.goupBy("setor").count()
+			-> funções de agregação
+				: count()
+				: max()
+				: min()
+				: mean()
+				: sum()
+				: pivot()
+				: agg(função de agregação adicional)
+		° orderby
+			-> val dfN2 = dfN.orderBy("nome")
+		° join
+		° limit(n)
+	8.4 exemplo de multiplos
+		° val dfN = dfA.select("nome","qtd").where("qtd>50").orderBy("nome")
+	8.5 para acessar os atributos tem 3 formas
+		° "<atributo>" -> quando voce quer so acessar o atributo
+			-> df.select("nome","qtd").show()
+		° $"<atributo>" -> quando voce quer fazer uma operação com o atributo
+			-> df.select("nome",$"qtd"*10).show()	
+		° <dataFrame>("<atributo>") -> quando voce quer realizar funções com atributos, ou utilizar outros dataFrames
+			-> df.where(produtoDF("nome").startsWith("A")).show()
+
+9. Schema 
+	9.1 o spark pode tentar definir schemas de dados semi-estruturados
+	9.2 por padrão o spark não infere schema na leitura dos dados
+	9.3 para inferir um schema no spark usa-se o options na leitura dos dados
+		° para arquivos sem cabeçalho
+			-> val <Nome do Dataframe> = spark.read.option("inferSchema","true").<formato>("<arquivo>")
+		° para arquivos com cabeçalho
+			-> val <Nome do Dataframe> = spark.read.option("inferSchema","true").option("header","true").<formato>("<arquivo>")
+
+10. joins
+	10.1 é igual aos joins do sql
+	10.2 estrutura
+		° quando as colunas dos joins são iguais 
+			-> <dataFrame 1>.join(<data frame 2>,"<coluna do data frame 2>",<tipo de join>).show()
+		° quando as colunas dos joins são diferentes
+			-> <dataFrame 1>.join(<data frame 2>,<dataFrame1>("<coluna>")===<dataFrame2>("<coluna>"),<tipo de join>).show() 
+	10.3 tipos de join
+		° inner
+		° outer
+		° left_outer
+		° right_outer
+		° leftsemi
+
+11. Spark SQL Query
+	11.1 realiza consultas com comandos sql, podendo ler tabelas hive, criando dataset e ler formatos de arquivos diversos
+	11.2 para executar consultas usa-se
+		° val myDF = spark.sql("select * from pessoas");
+			-> esse select gera um dataFrame que pode ser usado com todos os comandos anteriores
+		° todas as tabelas do spark sql são tabelas hive como default, para ler outro arquivo faça
+			-> val myDF = spark.sql("select * from <tipo do arquivo>.'<caminho no hdfs>'");
+		° tipos de consultas aceitas
+			-> select, where, group by, having, order by, limit, count, sum, mean, as, subqueries
+	11.3 trabalha direto com sql sem usar tranformações
+	11.4 Views
+		° existem 2 tipos de views
+			-> Global, usada em várias sessões sparks
+			-> Regular, usada apenas em uma sessão do spark
+		° comandos views
+			-> dataFrame.createTempView(nome-view)
+			-> dataFrame.createOrReplaceTempView(nome-view)
+			-> dataFrame.createGlobalTempView(nome-view)
+		° exeplos
+			-> val clienteDF = spark.read.json("cliente.json")	
+				clienteDF.createTempView("clieteView")
+				val tabDF = spark.sql("select * from clienteView").show(10)
+
+12. Api Catalog
+	12.1 serve para explorar e gerenciar as suas views, ela é configurada para ver o metastore do hive, podendo ler outros bd
+	12.2 comando
+		° spark.catalog.<sub-comando>
+		° sub-comandos
+			-> listDatabases.show()
+			-> setCurrenteDatabase(nomeBD) : seta o banco de dados atual
+			-> listTables.show()
+			-> listColumns(nomeDaTables).show()
+			-> dropTempView(nomeDaView) : remove views
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

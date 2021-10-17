@@ -1,0 +1,12 @@
+============================================================================================================================
+						Exercicio 1
+============================================================================================================================
+	put produto/_doc/1 {"nome": "mouse", "qtd": 50, "descricao": "com fio USB, compatível com Windows, Mac e Linux"}
+	put produto/_doc/2 {"nome": "hd", "qtd": 20, "descricao": "Interface USB 2.0, 500GB, Sistema: Windows 10, Windows 8, Windows 7 "}
+	put produto/_doc/3 {"nome": "memória ram", "qtd": 10, "descricao": "8GB, DDR4"}
+	put produto/_doc/4 {"nome": "cpu", "qtd": 15, "descricao": "i5, 2.5Ghz"}3
+	HEAD produto/_doc/3
+	post produto/_update/3 {"doc":{"qtd":30}}
+	get produto/_doc/1
+	delete produto/_doc/4
+	get produto/_count

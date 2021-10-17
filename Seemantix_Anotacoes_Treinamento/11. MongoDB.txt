@@ -1,0 +1,275 @@
+1. Os banco de dados nosql são pensandos para ter um alto desempenho
+	1.1 tem um schema flexivel
+	1.2 é não relacional
+	1.3 possui uma arquitetura distribuida
+		-> os bancos de dados nosql e focado em escalabilidade horizontal
+
+2. os bancos de dados nosql possui varia formas de orientação de estrutura de dados
+	2.1 orientado a colunas
+		-> cassandra
+	2.2 chave-valor
+		-> redis
+	2.3 orientado a grafos
+		-> neo4j
+	2.4 orientado a documentos
+		-> mongoDB
+			- bancos orientados a documentos não se faz join
+
+3. BASE X ACID
+	3.1 ACID
+		-> Atomicidade
+			- a transação sera executada totalmente ou nao sera executada
+		-> Consistencia
+			- garantir visão unica dos dados
+		-> Isolamento
+			- garante e gerencia a concorrencia 
+		-> Durabilidade
+			- garante que os dados sempre vão estar disponiveis
+	3.2 BASE
+		-> Basically Avaliabe
+			- basicamente disponivel - a aplicação funciona sempre
+		-> soft-state
+			- estado-leve nao precisa estar concistente sempre
+		-> eventualy-consistance
+			- em algum momento a aplicação se torna consistente
+
+4. Teorema de C.A.P
+	4.1 impossivel no armazenamento distribuido garantir mais de duas das tres grantias
+		-> Consistency
+			- quando armazenar os dados - todos os usuarios tem acesso
+		-> Avaliability
+			- quando solicitar os dados - sempre irá ser retornado
+		-> Partition Tolerante
+			- quando falhar a rede - o sistema vai continuar disponivel
+	4.2 exemplos
+		-> cassandra = A.P
+		-> mongoDB = C.P
+		-> neo4J = C.A
+
+5. o mongodb é um bd distribuido e nosql orientado a documentos
+	5.1 formato bson (json binário)
+	5.2 esquema flexivel ou semi-estruturado
+	5.3 um documento não precisa depender do outro e cada um pode ter seu próprio schema
+
+6. versões do mongoDB
+	6.1 communty
+		-> gratuito
+		-> open-source
+	6.2 enterprise
+		-> assinatura do mongodb enterprise advanced
+		-> inclui suporte para instalação
+		-> recursos adicionais
+			- LDAP
+			- KERBEROS
+			- CRIPTOGRAFIA EM DISCO
+			- AUDITORIA
+
+7. relacional x mongodb
+	relacional       Mongo db
+	banco de dados | banco de dados
+	tabela         | coleção
+	registro(linha)| documentos
+	coluna         | atributos
+	indice         | indice
+
+8. formato BSON
+	8.1 é um json binário expandido
+	8.2 json
+		-> javascript object notation
+		-> objetos sao chave e valor
+			- string / (string, numero, objeto)
+			- esquema flexivel
+		-> melhor que xml
+			- reprsenta estrutura de objetos
+		-> formato texto
+			- facil leitura para humanos
+	8.3 o mongod com o json
+		representa documentos
+		formato texto
+			analise lenta e armazenamento eficiente
+		tem limitações nos tipos de dados
+	8.4 o mongodb com bson
+		-> otimização
+			- velocidade
+			- espaço
+			- flexibilidade
+		-> o mongodb armazena os dados como bson 
+
+9. CRUD
+	9.1 parar criar o banco de dados (voce so consegue vizualizar o bd depois de ter um colection nele)
+		-> use <nome db>
+	9.2 para visualizar o bd criado
+		-> bd
+	9.3 para criar uma colection
+		-> use <db_name>
+  		-> db.createCollection('<nome da colection>')
+	9.4 para ver a colection
+		-> show collections
+	9.5 para visualizar os bd com colections
+		-> show dbs
+	9.6 excluir collection
+		-> db.<nome da colection>.drop()
+	9.7 excluir db
+		-> use <nome do banco>
+		-> db.dropDatabase()
+	9.8 renomear collection
+		-> db.<nome da collection>.renameCollection('<nome da nova coleção>')
+	9.9 inserir documentos
+		-> inserir um documento
+			- db.<nome da collection>.insertOne({nome: "a",idade: 2})
+		-> inserir varios documentos (inserir um array)
+			- db.<nome da collection>.insertMany([{nome: "a",idade: 2},{nome: "b",idade: 3, so: "windowns"},{nome: "c"}])
+	9.10 pesquisar documentos
+		-> pesquisar todos os documentos em linhas separadas
+			- db.<nomeCollection>.find().pretty()
+	9.11 tipos de datas
+		-> objectID, string, numero(long, int, decimal, double), boolean, array, date, NULL, regex, Timestamp
+
+10. OBS: UM DOCUMENTO SUPORTA ANINHAMENTO DE DOCUMENTOS, FICANDO UM DENTRO DO OUTRO
+
+11. busca em documentos
+	11. sintaxe basica da consulta
+		-> db.<collectionName>.find({<criterio de consulta>},{<projeção>})
+		-> criterio de consulta
+			- operadores aplicados nos aributos
+			- {<atributo>:{<operador>:<valor>}}
+			- operadores
+				§ $eq = igual
+				§ $ne = diferente de
+				§ $gt = maior que
+				§ $gte = maior ou igual a 
+				§ $lt = menor
+				§ $lte = menor ou igual a
+				§ $in = na lista OBS DEPOIS DO IN VOCE COLOCA OS VALORES DENTRO DA LISTA $in : [valor,valor2...]
+				§ $nin = fora da lista OBS DEPOIS DO NIN VOCE COLOCA OS VALORES DENTRO DA LISTA $in : [valor,valor2...]
+				§ $no = not logico
+		-> projeção
+			- atributos que são visualizados pela consulta
+			- {<atributo>:0} = ocultar o atributo
+			- {<atributo>:1} = mostrar APENAS O atributo
+
+12. replicação
+	12.1 é o core em ambientes de produção, esse conceito se chama replica set, ele mantes instancias que mantem os dados replicados
+	12.2 sempre o replica set tem o nó primário
+		-> recebe as solicitações de escrita e leitura
+		-> registra todas as alterações em seus dataset em seu log de operação (oplog)
+	12.3 no secundario
+		-> replica os oplogs do nó primário
+		-> ganha desempenho nas leituras
+	12.4 para ver as configurações e o status do replica set
+		-> rs.conf() = para configuração
+		-> rs.status() = para ver o status da replicação
+
+13. shards
+	13.1 o mongo db fragmenta os dados em nivel de collection distribuidos em shards no seu cluster
+	13.2 as shards são subconjuntos dos seus dados, pode ser implementado como replica set e possui escalabilidade horizontal
+	13.3 para cada shard voce tem um replica set
+	13.4 config server armazena os metadados e as definições de configuraçoes e tambem possui um replica set
+	13.5 o mongos e a interface entre a aplicação cliente e o shared cluster
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+		  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

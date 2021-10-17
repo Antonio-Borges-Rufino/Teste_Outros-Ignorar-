@@ -1,0 +1,12 @@
+1. copiar os dados do arquivo local para o container database
+	1.1 docker cp input/exercises-data/db-sql/  database:/
+2. acessar o container database
+	2.1 docker exec -it database bash
+3. instalar banco de dados teste 
+	3.1 para o BD employyes
+		° cd /db-sql/
+		° mysql -p secret < employees.sql
+	3.2 para o BD sakila
+		° cd /db-sql/sakila/
+		° mysql -p secret < sakila-mv-schema.sql
+		° mysql -p secret < sakila-mv-data.sql

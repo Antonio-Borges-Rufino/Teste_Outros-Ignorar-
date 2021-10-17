@@ -1,0 +1,125 @@
+1. o hbase trabalha com armazenamento em real time construindo em cima do hdfs
+	1.1 o hbase é orientado a colunas
+
+2. pode-se pensar no hbase como bd-nao relacional ou como um armazenamento distribuido em real time
+	2.1 não existe um banco de dados no hbase
+	2.2 os dados estão todos juntos com várias colunas, com cada coluna pertencendo a uma familia de dados
+
+3. uso para acesso de leitura e gravação em tempo real
+
+4. arquitetura
+	4.1 os dados são distribuidos automaticamente no cluster usando chaves, cada nó armazena um subconjunto dos dados
+	4.2 componentes
+		° Region server
+			-> tabelas são divididas por região
+		° Hbase Master
+			-> gerencia as regions server
+		° Zookeper
+			-> manitora e coordena o hbase master
+			-> onde ta os arquivos de configuração
+			-> metadados das tabelas do hbase
+		° Hdfs
+			-> namenode/standnamenode, datanode
+			-> guarda os registros
+
+5. o cliente busca os metadados no zookeper com hbase e depois acessa diretamente as regions serves que estão localizados nos datanode
+	5.1 todo esse processo é feito em memória para mais velocidade
+
+6. Modelo dos dados
+	7.1 Tabela
+		° onde se organiza os dados
+		° possui o conceito de big table, ou seja, os dados estão todos armazenados em uma unica tabela
+		° cada linha dessa tabela possui um identificador que a identifica 
+	7.2 Chave da linha
+		° é um identificador em hash que identifica a linha de informações
+	7.3 Familia de colunas
+		° todas as colunas são agrupadas em familias
+	7.4 Nome da coluna
+		° identifica a coluna
+	7.5 Versão
+		° valores em celulas são controlados pelo numero de versão (timestamp)
+	7.6 Celula (chave -> valor)
+		° id linha, familia de coluna, coluna e timestamp = valor da linha 
+
+7. Comandos Gerais
+	7.1 para entrar no hbase
+		° docker exec -it hbase-master
+		° hbase shell
+	7.2 para ver a versão do hbase
+		° version
+	7.3 ajuda para comandos de tabela
+		° table_help
+	7.4 para obter informações sobre o usuario
+		° whoami
+	7.5 para obter ajuda para algum comando
+		° help -> para o geral
+		° help "<comando>" -> para um comando especifico
+
+8. Comandos de manipulação de tabela
+	8.1 create: criar tabelas
+		° create 'nome da tabela', {NAME => 'familia', VERSIONS = 2}, {NAME => 'familia2', VERSIONS = 3}, ...
+	8.2 list: listar a tabela
+		° list 
+	8.3 disable: desabilita uma tabela
+		° disable 'nome da tabela'
+		° disable_all 'c.*' desabilita todas as tabelas que começam com c
+	8.4 is_disable: verifica se a tabela está desabilitada
+		° is_disable 'nome da tabela'
+	8.5 enable: habilita uma tabela
+		° enable 'nome da tabela'
+	8.6 is_enable: verifica se uma tabela está habilitada
+		° is_enable 'nome da tabela'
+	8.7 describe: verificar a estrutura da tabela
+		° describe 'nome da tabela'
+	8.8 alter: altera o nome da familia de coluna, versões
+		° alter '<nome da tabela>', {NAME=>'<familia>',VERSIONS=>N°} -> pode alterar o nome da familia, e o numero de versões, se a familia nao existir, cria uma nova
+		° alter '<nome da tabela>', 'delete'=>'<familia>' -> deleta uma familia
+	8.9 exists: verifica se a tabela existe
+		° exists 'nome da tabela'
+	8.10 drop: deleta uma tabela (precisa desabilitar a tabela) 
+		° drop 'nome da tabela'
+	8.11 drop_all: deleta todas as tabelas 
+		° drop_all '*' -> o * e um coringa que subistitui tudo
+		° drop_all 'c*' -> deleta todas as tabelas que começam com c
+
+9. comandos de manipulação de dados da tabela
+	9.1 put: insere os dados
+		° put '<nome da tabela>','<chave>','<familia:coluna>','<valor>'
+	9.2 get: consulta pela chave
+		° get '<nome da tabela>','<chave>'
+		° get '<nome da tabela>','<chave>', {COLUMNS=>['<familia>'],['<familia>']} -> mostra os valores por familia e chave
+		° get '<nome da tabela>','<chave>', {COLUMNS=>['<familia>:<coluna>'],['<familia>:<coluna>']} -> mostra os valores por familia e chave e coluna
+                ° get '<nome da tabela>','<chave>',{COLUMNS=>['<familia>:<coluna>'], VERSIONS=>N°} -> mostra as versões do registro da chave
+	9.3 delete: deleta valores
+		° delete '<nome da tabela>','<chave>','<familia>:<coluna>' -> deletar todos os valores associados a coluna
+		° delete '<nome da tabela>','<chave>','<familia>' -> deletar todos os valores associados a familia de coluna	
+	9.4 deleteall
+		° deleteall '<nome da tabela>','<chave>' -> deletar todos os valores associado a chave
+	9.5 scan: consulta pela tabela (mostra a tabela toda)
+		° scan '<nome da tabela>'
+		° scan '<nome da tabela>',{COLUMNS=>['<familia>']} -> consulta todas as linhas da tabela pela familia de coluna 
+		° scan '<nome da tabela>',{COLUMNS=>['<familia>:<coluna>']} -> consulta todas as linhas da tabela pela coluna
+		° scan '<nome da tabela>',{COLUMNS=>['<familia>:<valor>'],VERSIONS=>5} -> consultar todas as linhas de uma tabela pela versão de uma coluna
+		° scan '<nome da tabela>',{STARTROW=>'<chave>',COLUMNS=>['<familia>:<coluna>']} -> consulta todas as linhas de uma tabela pela chave
+	9.6 count: conta o numero de registros de uma tabela
+		° count '<nome da tabela>'
+	9.7 truncate: desabilita e recria a tabela 
+		° truncate 'nome da tabela'
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

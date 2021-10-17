@@ -1,0 +1,87 @@
+=======================================================================================
+				Exercicio 1
+======================================================================================= 
+	docker pull redis
+	sudo mkdir redis
+	docker-compose up -d
+	docker-compose start
+	docker ps
+	docker exec -it redis bash
+	redis-server --version
+	redis-cli
+
+=======================================================================================
+				Exercicio 2
+======================================================================================= 
+ 	set usuario:nome antonio
+ 	set usuario:sobrenome rufino
+ 	get usuario:nome
+ 	strlen usuario:nome
+ 	type usuario:sobrenome
+ 	set views:qtd 10
+ 	incr views:qtd
+ 	get views:qtd
+ 	del usuario:sobrenome
+ 	exists usuario:sobrenome
+ 	expire views:qtd 3600
+ 	ttl views:qtd
+ 	ttl usuario:nome
+ 	persist views:qtd
+
+
+=======================================================================================
+				Exercicio 3
+======================================================================================= 
+ 	subscribe noticias:sp
+ 	publish noticias:sp "Msg 1" 
+ 	publish noticias:sp "Msg 2" 
+ 	publish noticias:sp "Msg 3" 
+ 	unsubscribe noticias:sp
+ 	psubscribe noticias:*
+ 	publish noticias:rj "Msg 4"
+ 	publish noticias:rj "Msg 5"
+ 	publish noticias:rj "Msg 6"
+
+=======================================================================================
+				Exercicio 4
+=======================================================================================
+	config get *
+	config get appendonly
+	config set appendonly no
+	config get save
+	config set save '120 150'
+	config get maxmemory
+	config set maxmemory 1mb
+	config set maxmemory-policy allkeys-lru
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

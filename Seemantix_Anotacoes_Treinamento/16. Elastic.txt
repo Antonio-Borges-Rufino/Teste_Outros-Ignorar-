@@ -1,0 +1,194 @@
+1. o elastic foi feito para resolver problemas de busca
+
+2. elasticsearch
+	2.1 engine de busca e analytics altamente escalavel
+	2.2 banco de dados
+
+3. logstash
+	3.1 transporta os dados entre a origem e o destino final (elasticsearch)	
+
+4. kibana
+	4.1 GUI da elastic
+	4.2 vialuzação dos dados
+	4.3 gerenciamento dos dados
+
+5. beats
+	5.1 coletores de dados
+	5.2 distribuido 
+	5.3 lado do cliente (nao servidor)
+
+6. Banco relacional x elastic 
+	6.1 diferença
+		-> banco de dados -> index
+		-> tabela -> type (ate o 6, a partir do 7 é _doc)
+		-> schema -> mapping
+		-> registro -> documento
+		-> coluna -> atributo
+
+7. indice
+	7.1 shards
+		-> indice e dividido por shards
+		-> armazenam dados
+	7.2 alias
+		-> link virtual para um indice real (apelido)
+		-> associal um alias a um indice ou a mais de um indice (grupos)
+	7.3 analyzer
+		-> buscar por full text e valores associados
+	7.4 mapping
+		-> definição da estrutura do seu indice
+
+8. comunicação
+	8.1 toda comunicação e feita atraves de protocolo http
+		-> put, delete,get,post,head
+	8.2 fazemos requisão para a api do elasticsearch atraves de jason
+	8.3 sintaxe da requisição
+		-> <ação> endereço_api:porta/indice/<opçoes>
+		-> put localhost:9200/cliente/_create
+
+9. operações basicas (CRUD)
+	9.1 Head
+		-> retorna apenas o cabeçalho do http
+		-> exemplo
+			- curl 
+				§ curl -XHEAD -v http://localhost:9200/cliente/_doc/1
+			- kibana
+				§ HEAD cliente/_doc/1
+	9.2 Put
+		-> criar ou indexar um documento inteiro
+		-> exemplo
+			- kibana
+				§ put cliente/_doc/1 {"nome":"xxx","idade":20,}
+				§ put cliente/_create/1 {"nome":"xxx","idade":20,}		
+	9.3 Post
+		-> criar um documento com id ou atualizar um documento parcial
+		-> exemplo
+			- kibana
+				§ post cliente/_update/1 {"doc":{"nome":"joao"}}
+				§ post cliente/_doc {"nome":"joao"}
+	9.4 Delete
+		-> deletar um documento
+		-> exemplo 
+			- kibana
+				§ delete cliente/_doc/1
+				§ delete cliente
+	9.5 Get
+		-> buscar informações sobre o cluster
+			- get /
+		-> buscar todos os documentos de um indice
+			- get cliente/_search
+		-> buscar um documento em um indice
+			- get cliente/_doc/1
+		-> buscar a quantidade de documentos em um indice
+			- get cliente/_count
+		-> buscar os dados de um documento em um indice
+			- get cliente/_source/1
+
+10. Beats
+	10.1 enviam os dados de outras maquinas para o elasticsearch ou para o logstach
+
+11. logstash
+	11.1 pega diversas fontes de dados e envia para o elasticsearch
+	11.2 possui plugin
+		-> input
+		-> filter
+		-> output
+	11.3 o logstash pode ser um centralizador dos dados dos beats
+
+12. kibana
+	12.1 discover
+		-> acessar, pesquisar e filtrar dados do indice selecionado
+		-> detalhes dos campos da pesquisa
+		-> salvar pesquisas para usar no discover, visualizações e dashboards
+	12.2 visualize
+		-> criar, editar e salvar visualizações dos dados
+			- consultas, filtros e agregações
+	12.3 dashboard
+		-> combina varias visualizações de dados em um unico so lugar
+	12.4 canvas
+		-> visualizações e apresentações de dados em página e combinações de cores, imagens e textos
+	12.5 maps
+		-> analisa dados geográficos em tempo real
+			- mapas com varias camadas e indices
+			- aceita o tipo GeoJson
+	12.6 machineLearning
+		-> gerenciamento de jobs
+		-> detecção de anomalias
+		-> carregamento de dados
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				
+				
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		

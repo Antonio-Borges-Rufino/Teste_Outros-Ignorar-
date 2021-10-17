@@ -1,0 +1,117 @@
+=====================================================================================
+					1° exercicio
+=====================================================================================
+docker exec -it namenode bash
+hdfs dfs -mkdir /user/aluno/antonio/data/populacao
+hdfs dfs -put /input/exercises-data/populacaoLA/populacaoLA.csv /user/aluno/antonio/data/populacao
+exit
+docker exec -it hive-server bash
+beeline -u jdbc:hive2://localhost:10000
+show databases;
+create database aluno;
+use aluno;
+create table pop(
+	zip_code int,
+	total_population int,
+	median_age float,
+	total_males int,
+	total_females int,
+	total_households int,
+	average_household_size float)
+	row format delimited
+	fields terminated by ','
+	lines terminated by '\n'
+	stored as textfile
+	tblproperties("skip.header.line.count"="1");
+desc pop;
+desc formatted pop;
+
+====================================================================================
+					2° exercicio
+====================================================================================
+desc formatted pop;
+select * from pop limit 10;
+load data inpath '/user/aluno/antonio/data/populacao/populacaoLA.csv' overwrite into table pop;
+select * from pop limit 10;
+select count(*) from pop;
+
+====================================================================================
+					3° exercicio
+====================================================================================
+ docker exec -it namenode bash
+ hdfs dfs -mkdir /user/aluno/antonio/data/nascimento/
+ docker exec -it hive-server bash
+ beeline -u jdbc:hive2://localhost:10000
+ create database pessoa;
+ use pessoa;
+ create external table nascimento(nome String, sexo String, frequencia int)
+	partitioned by (ano String)
+	row format delimited
+	fields terminated by ','
+	lines terminated by '\n'
+	stored as textfile
+	location '/user/aluno/antonio/data/nascimento';
+ alter table nascimento add partition(ano='2015');
+ hdfs dfs -put /input/exercises-data/names/yob2015.txt /user/aluno/antonio/data
+ docker exec -it hive-server bash
+ beeline -u jdbc:hive2://localhost:10000
+ load data inpath '/user/aluno/antonio/data/yob2015.txt' into table nascimento partition(ano='2015');
+ select * from nascimento limit 10;
+ alter table nascimento add partition(ano='2016');
+ alter table nascimento add partition(ano='2017');
+ hdfs dfs -put /input/exercises-data/names/yob2016.txt /user/aluno/antonio/data 
+ hdfs dfs -put /input/exercises-data/names/yob2017.txt /user/aluno/antonio/data
+ select * from nascimento limit 10;
+
+====================================================================================
+					4° exercicio
+====================================================================================
+ docker exec -it hive-server bash
+ beeline -u jdbc:hive2://localhost:10000
+ select * from nascimento where ano=2016 limit 10;
+ select * from nascimento where ano=2017 limit 10;
+ select count(*) from nascimento where ano=2017;
+ select sexo ,sum(frequencia) as qtd from nascimento where ano=2015 group by sexo;
+ select sexo, sum(frequencia) as qtd, ano from nascimento group by sexo, ano order by qtd desc;
+ select ano, sexo, sum(frequencia) as qtd from nascimento where nome like 'A%' group by ano, sexo order by ano desc;
+ select nome, sum(frequencia) as qtd from nascimento where ano=2016 group by nome order by qtd desc limit 5 ;
+ select nome, sexo, max(frequencia) as qtd from nascimento where ano=2016 group by nome,sexo order by qtd desc limit 5;
+
+====================================================================================
+					5° exercicio
+====================================================================================
+ docker exec -it hive-server bash
+ beeline -u jdbc:hive2://localhost:10000
+ select * from pop limit 10;
+ create table pop_parquet (
+    zip_code int,
+    total_population int,
+    median_age float,
+    total_males int,
+    total_households int,
+    average_households_size float)
+    stored as parquet;
+ insert into pop_parquet select * from pop;
+ select count(*) from pop_parquet;
+ select * from pop_parquet limit 10;
+ create table pop_parquet_snappy (
+    zip_code int,
+    total_population int,
+    median_age float,
+    total_males int,
+    total_households int,
+    average_households_size float)
+    stored as parquet 
+    tblproperties('parquet.compress'='SNAPPY');
+ insert into pop_parquet_snappy select * from pop_parquet;
+ select count(*) from pop_parquet_snappy;
+ select * from pop_parquet_snappy limit 10;
+ hdfs dfs -du -h /user/hive/warehouse/ 
+
+
+
+
+
+
+
+
