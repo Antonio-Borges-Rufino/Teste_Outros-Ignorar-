@@ -1,0 +1,38 @@
+#Etapa 1
+1 - Adicionar uma conta no gcp (google cloud plataform)
+2 - Email: desafioDataProcAntonioBorges@gmail.com
+3 - Criar conta gcp
+4 - OBS: Dataproc é o hadoop do gcp
+5 - Entrar em https://console.cloud.google.com/
+6 - Criar um novo projeto -> desafiodataprocdio
+7 - Coloar seus dados cadastrais
+
+#Etapa 2
+1 - Colocar budget de faturamento
+2 - Em faturamento va em orçamento e alertas
+3 - Crie um novo orçamento
+4 - Habilite as API's do dataproc e compute engine
+5 - Va no serviço de compute engine e em instancias de vm
+6 - Ative a API e crie uma instancia
+7 - Exclui a maquina virtual
+
+#Etapa 3
+1 - Va em big data - dataproc
+2 - Ative a api do dataproc
+3 - Va em cloud storage 
+4 - Criar um cloud storage para colocar o codigo do desafio
+5 - Criar um storage com o nome desafio_dataproc_antonio_rufino
+6 - Va em big data - dataproc e crie um novo cluster
+7 - Criar um job spark simples com algum exemplo fornecido com spark
+
+#Etapa 4 - Desafio
+1 - Criar o bucket no cloud storage
+2 - Alterar o arquivo contador.py com as informações da minha cloud
+3 - Pegar os dados do repositorio, colocar eles no cloud storage, rodar os dados no 
+dataproc e depois jogar o output no cloud storage
+4 - Abra o cloud shell e faça um clone do repositorio
+5 - Entre na pasta e use o comando gsutil ls para enviar a pasta para o storage
+6 - Atualizar o arquivo contador.py
+7 - Substituir pelo nome do bucket
+8 - Subir os arquivos contador e livro para o bucket
+9 - Executar o contador no dataproc

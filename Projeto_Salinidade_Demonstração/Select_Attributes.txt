@@ -1,0 +1,36 @@
+=== Run information ===
+
+Evaluator:    weka.attributeSelection.CfsSubsetEval -P 1 -E 1
+Search:       weka.attributeSelection.BestFirst -D 1 -N 5
+Relation:     2007-2012 - Plan1-weka.filters.unsupervised.attribute.Remove-R1-4-weka.filters.unsupervised.instance.RemoveFrequentValues-Clast-N2
+Instances:    929
+Attributes:   11
+              SALINIDADE
+              RRS-412
+              RRS-443
+              RRS-469
+              RRS-488
+              RRS-531
+              RRS-547
+              RRS-555
+              RRS-645
+              RRS-667
+              RRS-678
+Evaluation mode:    10-fold cross-validation
+
+
+
+=== Attribute selection 10 fold cross-validation (stratified), seed: 1 ===
+
+number of folds (%)  attribute
+          10(100 %)    2 RRS-412
+          10(100 %)    3 RRS-443
+           7( 70 %)    4 RRS-469
+           9( 90 %)    5 RRS-488
+           0(  0 %)    6 RRS-531
+           0(  0 %)    7 RRS-547
+           0(  0 %)    8 RRS-555
+           0(  0 %)    9 RRS-645
+           0(  0 %)   10 RRS-667
+           0(  0 %)   11 RRS-678
+

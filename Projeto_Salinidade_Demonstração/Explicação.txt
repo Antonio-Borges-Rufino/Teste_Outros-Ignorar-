@@ -1,0 +1,5 @@
+1. Demonstração das habilidades aplicadas ao weka em mineração de dados, esses arquivos fizeram parte de uma pesquisa pessoal destinada ao meu tcc, entretanto, foram deixadas
+menos eficiente que a pesquisa real.
+2. Esses são arquivos de resultados gerados 
+3. O dataset não está disponivel por não ser um trabalho exclusivamente meu
+4. Esses resultados são apenas uma demonstração de habilidades pessoais no weka

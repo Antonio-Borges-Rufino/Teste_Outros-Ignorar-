@@ -1,0 +1,184 @@
+=== Run information ===
+
+Scheme:       weka.classifiers.functions.MultilayerPerceptron -L 0.3 -M 0.2 -N 500 -V 0 -S 0 -E 20 -H 10 -R -D
+Relation:     2007-2012 - Plan2-weka.filters.unsupervised.attribute.Remove-R1-4-weka.filters.unsupervised.instance.Randomize-S42-weka.filters.unsupervised.instance.RemoveFolds-S0-N10-F1
+Instances:    2084
+Attributes:   11
+              SALINIDADE
+              RRS-412
+              RRS-443
+              RRS-469
+              RRS-488
+              RRS-531
+              RRS-547
+              RRS-555
+              RRS-645
+              RRS-667
+              RRS-678
+Test mode:    split 30.0% train, remainder test
+
+=== Classifier model (full training set) ===
+
+Linear Node 0
+    Inputs    Weights
+    Threshold    0.828223211776232
+    Node 1    0.027475937493338425
+    Node 2    -0.023428465710342614
+    Node 3    -0.06148159071730258
+    Node 4    0.02811287968557392
+    Node 5    0.010029120770929111
+    Node 6    0.007282032566788559
+    Node 7    0.05991873926749097
+    Node 8    -0.15596673065342895
+    Node 9    -0.4451335707202701
+    Node 10    0.31250047065055936
+Sigmoid Node 1
+    Inputs    Weights
+    Threshold    -0.2960669892919661
+    Attrib RRS-412    0.02027975711898472
+    Attrib RRS-443    0.07927820479813669
+    Attrib RRS-469    0.05168561657278479
+    Attrib RRS-488    0.09636035126156635
+    Attrib RRS-531    0.20328405379698478
+    Attrib RRS-547    0.2051027064118998
+    Attrib RRS-555    0.16617522728666387
+    Attrib RRS-645    0.21802727604525643
+    Attrib RRS-667    0.21280203762017616
+    Attrib RRS-678    0.21283401792644363
+Sigmoid Node 2
+    Inputs    Weights
+    Threshold    -0.3429898063555173
+    Attrib RRS-412    0.03434513310191366
+    Attrib RRS-443    -0.014088326362584907
+    Attrib RRS-469    0.020640589614728377
+    Attrib RRS-488    0.1052366471845158
+    Attrib RRS-531    0.16783168998508324
+    Attrib RRS-547    0.20449627712248783
+    Attrib RRS-555    0.20673552500135703
+    Attrib RRS-645    0.2396503884653007
+    Attrib RRS-667    0.18393916540587252
+    Attrib RRS-678    0.15312349575740833
+Sigmoid Node 3
+    Inputs    Weights
+    Threshold    -0.26950516971171157
+    Attrib RRS-412    -0.03686675168415357
+    Attrib RRS-443    -0.004792327817040115
+    Attrib RRS-469    0.009783787621316988
+    Attrib RRS-488    0.04582691883737817
+    Attrib RRS-531    0.21394169244721029
+    Attrib RRS-547    0.22632860170291563
+    Attrib RRS-555    0.16870535779594728
+    Attrib RRS-645    0.19922385155873917
+    Attrib RRS-667    0.20494552415335804
+    Attrib RRS-678    0.2328535378309545
+Sigmoid Node 4
+    Inputs    Weights
+    Threshold    -0.3851447233636937
+    Attrib RRS-412    0.0848414397664112
+    Attrib RRS-443    0.03124413535486775
+    Attrib RRS-469    0.020541947069621314
+    Attrib RRS-488    0.05552656137684773
+    Attrib RRS-531    0.17926176708248429
+    Attrib RRS-547    0.22324565664654633
+    Attrib RRS-555    0.15941482567900767
+    Attrib RRS-645    0.18585916669559696
+    Attrib RRS-667    0.18246970656367395
+    Attrib RRS-678    0.20987843006196238
+Sigmoid Node 5
+    Inputs    Weights
+    Threshold    -0.2842797474841558
+    Attrib RRS-412    0.042119386680299416
+    Attrib RRS-443    0.03215308457046769
+    Attrib RRS-469    0.034663287105382315
+    Attrib RRS-488    0.11434941548069585
+    Attrib RRS-531    0.17164631188947735
+    Attrib RRS-547    0.20990693812911507
+    Attrib RRS-555    0.18861804294358717
+    Attrib RRS-645    0.22626472901535308
+    Attrib RRS-667    0.19112562851624423
+    Attrib RRS-678    0.2509313933009838
+Sigmoid Node 6
+    Inputs    Weights
+    Threshold    -0.3069860766253433
+    Attrib RRS-412    0.019135197445602464
+    Attrib RRS-443    0.06995004207412372
+    Attrib RRS-469    0.02598231475910023
+    Attrib RRS-488    0.07097898495948997
+    Attrib RRS-531    0.1878790442259797
+    Attrib RRS-547    0.19923879083501733
+    Attrib RRS-555    0.2275358389959989
+    Attrib RRS-645    0.18092310152274846
+    Attrib RRS-667    0.21087304565744622
+    Attrib RRS-678    0.2067195891847912
+Sigmoid Node 7
+    Inputs    Weights
+    Threshold    -0.38612336494804356
+    Attrib RRS-412    0.11908177623489104
+    Attrib RRS-443    0.06457925114492119
+    Attrib RRS-469    0.05190244358902235
+    Attrib RRS-488    0.07598219160429015
+    Attrib RRS-531    0.20433142168867643
+    Attrib RRS-547    0.21161688536331377
+    Attrib RRS-555    0.17233423386198374
+    Attrib RRS-645    0.1821539432522564
+    Attrib RRS-667    0.22822729229342323
+    Attrib RRS-678    0.16842150796316693
+Sigmoid Node 8
+    Inputs    Weights
+    Threshold    -0.313541218807138
+    Attrib RRS-412    -0.07751046051365153
+    Attrib RRS-443    -0.0985807502629014
+    Attrib RRS-469    -0.029304559751044193
+    Attrib RRS-488    0.07791290939860565
+    Attrib RRS-531    0.20910074667067033
+    Attrib RRS-547    0.2092068462337895
+    Attrib RRS-555    0.20107348246177198
+    Attrib RRS-645    0.16837745371074433
+    Attrib RRS-667    0.14910936682164447
+    Attrib RRS-678    0.16285070818104685
+Sigmoid Node 9
+    Inputs    Weights
+    Threshold    -0.19557106126947207
+    Attrib RRS-412    -0.2530602522572654
+    Attrib RRS-443    -0.33964670686546433
+    Attrib RRS-469    -0.07889276909596075
+    Attrib RRS-488    0.1131686267340583
+    Attrib RRS-531    0.2881298479187058
+    Attrib RRS-547    0.21551696048818092
+    Attrib RRS-555    0.24403662730286985
+    Attrib RRS-645    0.11983167509830932
+    Attrib RRS-667    0.07632677430489984
+    Attrib RRS-678    0.1795917961444742
+Sigmoid Node 10
+    Inputs    Weights
+    Threshold    -0.3579838406164388
+    Attrib RRS-412    0.25828125384152345
+    Attrib RRS-443    0.2856486981286956
+    Attrib RRS-469    0.07358343692235969
+    Attrib RRS-488    0.06317924609819411
+    Attrib RRS-531    0.11862886986157842
+    Attrib RRS-547    0.163332885253228
+    Attrib RRS-555    0.13060131879831624
+    Attrib RRS-645    0.2526390358360049
+    Attrib RRS-667    0.30286279829589485
+    Attrib RRS-678    0.28645198545053346
+Class 
+    Input
+    Node 0
+
+
+Time taken to build model: 1.56 seconds
+
+=== Evaluation on test split ===
+
+Time taken to test model on test split: 0 seconds
+
+=== Summary ===
+
+Correlation coefficient                  0.226 
+Mean absolute error                      0.8924
+Root mean squared error                  2.1829
+Relative absolute error                 93.4349 %
+Root relative squared error             98.3219 %
+Total Number of Instances             1459     
+
