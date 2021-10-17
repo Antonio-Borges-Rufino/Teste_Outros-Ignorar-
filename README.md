@@ -1,2 +1,2 @@
 # GIT
-Repositorio Pessoal 
+Repositorio de códigos de teste, anotações e gerais.
